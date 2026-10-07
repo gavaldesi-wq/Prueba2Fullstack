@@ -1,0 +1,359 @@
+:root{
+  --fondo-principal:  #0a0e17; 
+  --fondo-secundario: #0d1420; 
+  --fondo-tarjeta:    #0c1220; 
+  --cyan:             #22e0f0; 
+  --cyan-brillo:      rgba(34, 224, 240, .35); 
+  --texto-claro:      #e8f4f8; 
+  --texto-apagado:    #8a9ba8; 
+  --borde-cyan:       rgba(34, 224, 240, .35); 
+}
+
+
+/* estilos generales */
+body{
+  background: var(--fondo-principal);
+  color: var(--texto-claro);
+  font-family: 'Inter', sans-serif;
+}
+
+a{ text-decoration: none; }
+
+
+/*Barra superior, inicio de sesion y registro de usaurio */
+.enlaces-usuario a {
+  color: var(--texto-apagado);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.enlaces-usuario a:hover {
+  color: var(--cyan);
+}
+/* Logos, links, etc*/
+.barra-navegacion{
+  background: var(--fondo-secundario);
+  border-bottom: 1px solid var(--borde-cyan);
+}
+
+.enlace-nav{
+  color: var(--texto-claro) !important;
+  font-weight: 500;
+  margin-right: 1.2rem;
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
+}
+.enlace-nav:hover,
+.enlace-nav.active{
+  color: var(--cyan) !important;
+  border-bottom: 2px solid var(--cyan);
+}
+
+.texto-logo{
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  letter-spacing: 2px;
+  line-height: 1;
+  text-align: center;
+}
+.texto-logo .destacado{
+  color: var(--cyan);
+  text-shadow: 0 0 12px var(--cyan-brillo);
+}
+.subtitulo-logo{
+  font-size: .6rem;
+  letter-spacing: 4px;
+  color: var(--texto-apagado);
+  text-align: center;
+  display: block;
+}
+
+.campo-busqueda{
+  background: var(--fondo-principal);
+  border: 1px solid var(--borde-cyan);
+  color: var(--texto-claro);
+  max-width: 200px;
+}
+.campo-busqueda::placeholder{ color: var(--texto-apagado); }
+.campo-busqueda:focus{
+  background: var(--fondo-principal);
+  color: var(--texto-claro);
+  box-shadow: 0 0 0 .2rem var(--cyan-brillo);
+  border-color: var(--cyan);
+}
+
+.enlace-carrito{
+  color: var(--texto-claro);
+  position: relative;
+}
+.enlace-carrito .badge{
+  background: var(--cyan);
+  color: #06111a;
+}
+
+/* El menu desplegable donde tan los productos */
+.menu-desplegable{
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-cyan);
+}
+.menu-desplegable .dropdown-item{
+  color: var(--texto-claro);
+}
+.menu-desplegable .dropdown-item:hover,
+.menu-desplegable .dropdown-item:focus{
+  background: var(--cyan-brillo);
+  color: var(--cyan);
+}
+.menu-desplegable .dropdown-divider{
+  border-color: var(--borde-cyan);
+}
+
+
+/* el Banner principal */
+.banner-principal{
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--borde-cyan);
+  border-radius: 14px;
+  padding: 3rem 2.5rem;
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+}
+.banner-principal h1{
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 2.2rem;
+}
+
+.banner-principal > div {
+  width: 100%;
+}
+
+.banner-principal img{
+  display: block;
+  margin: 2rem auto 0 auto;
+  max-width: 100%;
+  width: 900px;
+  height: auto;
+  border: 2px solid var(--borde-cyan);
+  border-radius: 12px;
+  box-shadow: 0 8px 25px var(--cyan-brillo);
+}
+
+
+.banner-principal .destacado{
+  color: var(--cyan);
+  text-shadow: 0 0 14px var(--cyan-brillo);
+}
+
+.boton-cyan{
+  background: var(--cyan);
+  color: #06111a;
+  font-weight: 700;
+  border: none;
+}
+.boton-cyan:hover{
+  color: #06111a;
+  box-shadow: 0 0 20px var(--cyan-brillo);
+}
+
+
+/* Productos Destacados */
+.titulo-seccion{
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 3px;
+  text-align: center;
+  margin: 50px;
+}
+
+
+.tarjeta-producto{
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-cyan);
+  border-radius: 10px;
+  height: 100%;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.tarjeta-producto:hover{
+  transform: translateY(-5px);
+  box-shadow: 0 0 22px var(--cyan-brillo);
+}
+.tarjeta-producto img{
+  background: white;
+  border-radius: 10px 10px 0 0;
+  padding: 1rem;
+  height: 160px;
+  object-fit: contain;
+  width: 100%;
+}
+.tarjeta-producto .producto{
+  font-size: .95rem;
+  font-weight: 600;
+  min-height: 48px;
+}
+.tarjeta-producto .precio{
+  color: var(--cyan);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+
+
+/* La parte de abajo de la pagina*/
+footer{
+  background: var(--fondo-secundario);
+  border-top: 1px solid var(--borde-cyan);
+  margin-top: 4rem;
+}
+footer h6{
+  color: var(--texto-claro);
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+footer a{
+  color: var(--texto-apagado);
+  display: block;
+  margin-bottom: .5rem;
+}
+footer a:hover{ color: var(--cyan); }
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* El elemento contenedor principal debe crecer para llenar el espacio */
+body > .container { 
+  flex-grow: 1;
+}
+ 
+/* -----------------------------------------------------------
+   CARRITO DE COMPRAS
+----------------------------------------------------------- */
+.fila-carrito{
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-cyan);
+  border-radius: 10px;
+}
+.miniatura-carrito{
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  background: white;
+  border-radius: 8px;
+  padding: .3rem;
+}
+.resumen-carrito{
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-cyan);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+ 
+/* -----------------------------------------------------------
+   FORMULARIOS (contacto, login, registro)
+----------------------------------------------------------- */
+.tarjeta-formulario{
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-cyan);
+  border-radius: 12px;
+  padding: 2.5rem;
+  max-width: 480px;
+  margin: 3rem auto;
+}
+.tarjeta-formulario h2{
+  font-family: 'Orbitron', sans-serif;
+  text-align: center;
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+}
+.campo-formulario{
+  background: var(--fondo-principal);
+  border: 1px solid var(--borde-cyan);
+  color: var(--texto-claro);
+  width: 100%;
+}
+.campo-formulario::placeholder{ color: var(--texto-apagado); }
+.campo-formulario:focus{
+  background: var(--fondo-principal);
+  color: var(--texto-claro);
+  box-shadow: 0 0 0 .2rem var(--cyan-brillo);
+  border-color: var(--cyan);
+}
+.mensaje-error{
+  color: #ff6b6b;
+  font-size: .8rem;
+  margin-top: .3rem;
+}
+.enlace-auth{
+  color: var(--texto-apagado);
+  text-align: center;
+  display: block;
+  margin-top: 1.5rem;
+  font-size: .9rem;
+}
+.enlace-auth a{ color: var(--cyan); }
+.enlace-auth a:hover{ text-decoration: underline; }
+ 
+ 
+/* -----------------------------------------------------------
+   PÁGINA "NOSOTROS"
+----------------------------------------------------------- */
+.texto-pagina{
+  color: var(--texto-apagado);
+  line-height: 1.7;
+}
+.tarjeta-equipo{
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-cyan);
+  border-radius: 10px;
+  text-align: center;
+  padding: 1.5rem;
+}
+.tarjeta-equipo img{
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--cyan);
+  margin-bottom: 1rem;
+}
+.tarjeta-equipo .rol{
+  color: var(--cyan);
+  font-size: .85rem;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+}
+
+h1,
+h2,
+.texto-logo,
+.titulo-seccion {
+  font-family: "Orbitron", sans-serif;
+}
+ 
+/* -----------------------------------------------------------
+   PÁGINA "BLOG"
+----------------------------------------------------------- */
+.tarjeta-blog{
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-cyan);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.tarjeta-blog img{
+  margin-top: 20px;
+  width: 100%;
+  height: 90%;
+  object-fit: cover;
+}
+.tarjeta-blog .contenido{
+  padding: 1.5rem;
+}
+.tarjeta-blog h3{
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+}
