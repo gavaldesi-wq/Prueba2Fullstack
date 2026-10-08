@@ -1,37 +1,74 @@
+import { Link } from "react-router-dom";
 
 function ProductoCard({ producto, agregarAlCarrito }) {
 
+  const precioFormateado =
+    producto.precio.toLocaleString("es-CL");
+
   return (
-    <div className="col-12 col-md-6 col-lg-4">
+    <div className="col-12 col-sm-6 col-lg-3">
 
-      <div className="tarjeta-producto p-3 text-center h-100">
+      <div className="tarjeta-producto">
 
-        <img
-          src={producto.imagen}
-          alt={producto.nombre}
-          className="img-fluid"
-        />
 
-        <p className="producto mt-3 mb-1">
-          {producto.nombre}
-        </p>
+        {/* IMAGEN */}
 
-        <p className="precio mb-1">
-          $ {producto.precio.toLocaleString("es-CL")}
-        </p>
+        <div className="contenedor-imagen-producto">
 
-        <p className="stock-producto">
-          Stock: {producto.stock}
-        </p>
+          <Link to={`/producto/${producto.id}`}>
 
-        <button
-          type="button"
-          className="btn boton-cyan w-100"
-          onClick={() => agregarAlCarrito(producto)}
-        >
-          <i className="bi bi-cart3 me-2"></i>
-          AÑADIR AL CARRITO
-        </button>
+            <img
+              src={producto.imagen}
+              alt={producto.nombre}
+            />
+
+          </Link>
+
+        </div>
+
+
+        {/* INFORMACIÓN */}
+
+        <div className="contenido-producto">
+
+          <h3 className="nombre-producto">
+            {producto.nombre}
+          </h3>
+
+
+          <span className="texto-desde">
+            Desde:
+          </span>
+
+
+          <p className="precio-producto">
+            ${precioFormateado}
+          </p>
+
+
+          <p className="descripcion-producto">
+            {producto.descripcionCorta}
+          </p>
+
+
+          <Link
+            to={`/producto/${producto.id}`}
+            className="boton-ver-producto"
+          >
+            Ver producto
+          </Link>
+
+
+          <button
+            type="button"
+            className="boton-agregar-card"
+            onClick={() => agregarAlCarrito(producto)}
+          >
+            <i className="bi bi-cart3"></i>
+            Agregar al carrito
+          </button>
+
+        </div>
 
       </div>
 

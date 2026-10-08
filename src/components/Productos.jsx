@@ -1,7 +1,32 @@
 import productos from "../js/productosbd";
 import ProductoCard from "./ProductoCard";
-
+import { useSearchParams } from "react-router-dom";
 function Productos({ agregarAlCarrito }) {
+
+  const [searchParams] = useSearchParams();
+  const textoBusqueda =
+  searchParams.get("buscar") || "";
+
+  const productosFiltrados =
+  productos.filter((producto) => {
+
+    const texto =
+      textoBusqueda.toLowerCase();
+
+    return (
+      producto.nombre
+        .toLowerCase()
+        .includes(texto)
+      ||
+      producto.categoria
+        .toLowerCase()
+        .includes(texto)
+      ||
+      (producto.marca || "")
+        .toLowerCase()
+        .includes(texto)
+    );
+  });
 
   return (
     <div className="container mt-5 mb-5">
@@ -16,7 +41,7 @@ function Productos({ agregarAlCarrito }) {
 
       <div className="row g-4">
 
-        {productos.map((producto) => (
+        {productosFiltrados.map((producto) => (
 
           <ProductoCard
             key={producto.id}
