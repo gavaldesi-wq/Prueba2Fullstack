@@ -124,45 +124,54 @@ function App() {
 
   }
 
-  function agregarAlCarrito(producto) {
+  function agregarAlCarrito(producto, cantidad = 1) {
+
+  const cantidadAgregar =
+    Number(cantidad) || 1;
+
+
+  setCarrito((carritoActual) => {
+
     const productoExistente =
-      carrito.find(
+      carritoActual.find(
         (item) =>
           item.id === producto.id
       );
 
+
     if (productoExistente) {
-      const carritoActualizado =
-        carrito.map((item) => {
-          if (
-            item.id === producto.id
-          ) {
-            return {
-              ...item,
-              cantidad:
-                item.cantidad + 1
-            };
-          }
-          return item;
-        });
 
-      setCarrito(
-        carritoActualizado
-      );
+      return carritoActual.map((item) => {
 
-    }
-    else {
-      setCarrito([
-        ...carrito,
-        {
-          ...producto,
-          cantidad: 1
+        if (item.id === producto.id) {
+
+          return {
+            ...item,
+
+            cantidad:
+              (Number(item.cantidad) || 0) +
+              cantidadAgregar
+          };
+
         }
-      ]);
+
+        return item;
+
+      });
 
     }
 
-  }
+    return [
+      ...carritoActual,
+
+      {
+        ...producto,
+        cantidad: cantidadAgregar
+      }
+    ];
+
+  });
+}
 
 
 
@@ -241,9 +250,10 @@ function App() {
   return (
     <>
       <Header
-        cantidadCarrito={
-          cantidadCarrito
-        }
+        cantidadCarrito={cantidadCarrito}
+        usuarioActivo={usuarioActivo}
+        iniciarSesion={iniciarSesion}
+        cerrarSesion={cerrarSesion}
       />
 
 
@@ -287,11 +297,10 @@ function App() {
         <Route
 
           path="/producto/:id"
-
           element={
-
-            <DetalleProducto />
-
+            <DetalleProducto 
+            agregarAlCarrito={agregarAlCarrito}
+            />
           }
 
         />
