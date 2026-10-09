@@ -1,6 +1,7 @@
 import { Link, NavLink, useNavigate} from "react-router-dom";
 import { useState } from "react";
 import LoginPanel from "./loginPanel";
+import Logo from "../assets/logo.png";
 
 function Header({
   cantidadCarrito,
@@ -41,27 +42,25 @@ function Header({
 
       <div className="barra-anuncio">
 
-        <div className="anuncio-movimiento">
+      <div className="anuncio-movimiento">
 
-          <span>
-            ¡Retira GRATIS tus compras en nuestra tienda!
-          </span>
+        <div className="grupo-anuncio">
+          <span>¡Retira GRATIS tus compras en nuestra tienda!</span>
+          <span>¡Retira GRATIS tus compras en nuestra tienda!</span>
+          <span>¡Retira GRATIS tus compras en nuestra tienda!</span>
+          <span>¡Retira GRATIS tus compras en nuestra tienda!</span>
+        </div>
 
-          <span>
-            ¡Retira GRATIS tus compras en nuestra tienda!
-          </span>
-
-          <span>
-            ¡Retira GRATIS tus compras en nuestra tienda!
-          </span>
-
-          <span>
-            ¡Retira GRATIS tus compras en nuestra tienda!
-          </span>
-
+        <div className="grupo-anuncio">
+          <span>¡Retira GRATIS tus compras en nuestra tienda!</span>
+          <span>¡Retira GRATIS tus compras en nuestra tienda!</span>
+          <span>¡Retira GRATIS tus compras en nuestra tienda!</span>
+          <span>¡Retira GRATIS tus compras en nuestra tienda!</span>
         </div>
 
       </div>
+
+    </div>
 
 
       {/* HEADER PRINCIPAL */}
@@ -75,24 +74,27 @@ function Header({
 
             {/* LOGO */}
 
-            <div className="col-12 col-lg-2">
+            <Link to="/" className="navbar-brand logo-header-completo">
 
-              <Link
-                className="navbar-brand"
-                to="/"
-              >
+              <img
+                src={Logo}
+                alt="Logo PC-SHOP"
+                className="logo-icono-header"
+              />
 
-                <span className="texto-logo fs-4">
-                  PC
-                  <span className="destacado">
-                    -SHOP
-                  </span>
+              <div className="logo-textos">
+
+                <span className="texto-logo">
+                  PC-<span className="destacado">SHOP</span>
                 </span>
+
                 <span className="subtitulo-logo">
                   PC COMPONENTS
                 </span>
-              </Link>
-            </div>
+
+              </div>
+
+            </Link>
 
 
             {/* BUSCADOR */}

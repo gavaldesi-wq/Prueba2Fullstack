@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Carrito({
   carrito,
   eliminarDelCarrito,
@@ -5,180 +7,290 @@ function Carrito({
   disminuirCantidad
 }) {
 
-  const total = carrito.reduce(
+  const cantidadProductos = carrito.reduce(
     (total, producto) =>
-      total + producto.precio * producto.cantidad,
+      total + (Number(producto.cantidad) || 0),
     0
   );
 
+  const total = carrito.reduce(
+    (acumulado, producto) =>
+      acumulado +
+      producto.precio * (Number(producto.cantidad) || 0),
+    0
+  );
 
-  return (
-    <div className="container mt-5 mb-5">
+  const totalFormateado =
+    total.toLocaleString("es-CL");
 
-      <h1 className="titulo-seccion">
-        Carrito de Compras
-      </h1>
+  if (carrito.length === 0) {
+    return (
+      <section className="pagina-carrito">
+        <div className="container">
 
+          <div className="carrito-vacio">
 
-      {carrito.length === 0 ? (
+            <i className="bi bi-cart3"></i>
 
-        <div className="text-center mt-5">
+            <h1>Tu carrito está vacío</h1>
 
-          <i className="bi bi-cart-x fs-1"></i>
+            <p>
+              Agrega productos para comenzar tu compra.
+            </p>
 
-          <h3 className="mt-3">
-            Tu carrito está vacío
-          </h3>
-
-          <p className="texto-pagina">
-            Agrega productos para comenzar tu compra.
-          </p>
-
-        </div>
-
-      ) : (
-
-        <>
-          <div className="table-responsive mt-4">
-
-            <table className="table table-dark align-middle">
-
-              <thead>
-
-                <tr>
-                  <th>Producto</th>
-                  <th>Precio</th>
-                  <th>Cantidad</th>
-                  <th>Subtotal</th>
-                  <th></th>
-                </tr>
-
-              </thead>
-
-              <tbody>
-
-                {carrito.map((producto) => (
-
-                  <tr key={producto.id}>
-
-                    <td>
-
-                      <div className="d-flex align-items-center">
-
-                        <img
-                          src={producto.imagen}
-                          alt={producto.nombre}
-                          width="80"
-                          className="me-3"
-                        />
-
-                        <span>
-                          {producto.nombre}
-                        </span>
-
-                      </div>
-
-                    </td>
-
-
-                    <td>
-                      $
-                      {producto.precio.toLocaleString(
-                        "es-CL"
-                      )}
-                    </td>
-
-
-                    <td>
-
-                      <div className="d-flex align-items-center gap-2">
-
-                        <button
-                          className="btn btn-sm boton-cyan"
-                          onClick={() =>
-                            disminuirCantidad(producto.id)
-                          }
-                        >
-                          -
-                        </button>
-
-
-                        <span>
-                          {producto.cantidad}
-                        </span>
-
-
-                        <button
-                          className="btn btn-sm boton-cyan"
-                          onClick={() =>
-                            aumentarCantidad(producto.id)
-                          }
-                        >
-                          +
-                        </button>
-
-                      </div>
-
-                    </td>
-
-
-                    <td>
-
-                      $
-                      {(
-                        producto.precio *
-                        producto.cantidad
-                      ).toLocaleString("es-CL")}
-
-                    </td>
-
-
-                    <td>
-
-                      <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() =>
-                          eliminarDelCarrito(producto.id)
-                        }
-                      >
-                        <i className="bi bi-trash"></i>
-                      </button>
-
-                    </td>
-
-                  </tr>
-
-                ))}
-
-              </tbody>
-
-            </table>
+            <Link
+              to="/productos"
+              className="boton-carrito-principal"
+            >
+              Ver productos
+              <i className="bi bi-arrow-right"></i>
+            </Link>
 
           </div>
 
+        </div>
+      </section>
+    );
+  }
 
-          <div className="d-flex justify-content-end mt-4">
+  return (
+    <section className="pagina-carrito">
 
-            <div className="text-end">
+      <div className="container">
 
-              <h3>
-                Total: $
-                {total.toLocaleString("es-CL")}
-              </h3>
+        <div className="encabezado-carrito">
 
-              <button className="btn boton-cyan mt-3 px-5">
-                CONTINUAR COMPRA
-              </button>
+          <div>
+            <h1>Carrito de Compras</h1>
+
+            <p>
+              Revisa tus productos y continúa con tu compra.
+            </p>
+          </div>
+
+        </div>
+
+
+        <div className="layout-carrito">
+
+
+          <div className="carrito-productos">
+
+            <div className="cabecera-carrito-productos">
+
+              <h2>
+                <i className="bi bi-cart3"></i>
+                Tu Carrito
+              </h2>
+
+              <span>
+                {cantidadProductos} productos
+              </span>
+
+            </div>
+
+
+            <div className="lista-carrito-productos">
+
+              {carrito.map((producto) => {
+
+                const precio =
+                  producto.precio.toLocaleString("es-CL");
+
+                const subtotal =
+                  (
+                    producto.precio *
+                    (Number(producto.cantidad) || 0)
+                  ).toLocaleString("es-CL");
+
+                return (
+
+                  <div
+                    className="producto-carrito-nuevo"
+                    key={producto.id}
+                  >
+
+                    <div className="carrito-producto-info">
+
+                      <img
+                        src={producto.imagen}
+                        alt={producto.nombre}
+                        className="carrito-producto-imagen"
+                      />
+
+                      <div>
+
+                        <h3>
+                          {producto.nombre}
+                        </h3>
+
+                        <span>
+                          {producto.categoria}
+                        </span>
+
+                      </div>
+
+                    </div>
+
+
+                    <div className="carrito-precio">
+                      ${precio}
+                    </div>
+
+
+                    <div className="control-cantidad-carrito">
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          disminuirCantidad(producto.id)
+                        }
+                      >
+                        −
+                      </button>
+
+                      <span>
+                        {producto.cantidad}
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          aumentarCantidad(producto.id)
+                        }
+                      >
+                        +
+                      </button>
+
+                    </div>
+
+
+                    <div className="carrito-subtotal">
+                      ${subtotal}
+                    </div>
+
+
+                    <button
+                      type="button"
+                      className="boton-eliminar-carrito"
+                      onClick={() =>
+                        eliminarDelCarrito(producto.id)
+                      }
+                    >
+                      <i className="bi bi-trash3"></i>
+                    </button>
+
+                  </div>
+
+                );
+
+              })}
+
+            </div>
+
+
+            <div className="carrito-seguir">
+
+              <Link
+                to="/productos"
+                className="boton-seguir-comprando"
+              >
+                <i className="bi bi-arrow-left"></i>
+                Seguir comprando
+              </Link>
 
             </div>
 
           </div>
 
-        </>
 
-      )}
+          <aside className="resumen-carrito-nuevo">
 
-    </div>
+            <div className="titulo-resumen-carrito">
+
+              <i className="bi bi-receipt"></i>
+
+              <h2>
+                Resumen
+              </h2>
+
+            </div>
+
+
+            <div className="fila-resumen">
+
+              <span>
+                Subtotal ({cantidadProductos} productos)
+              </span>
+
+              <strong>
+                ${totalFormateado}
+              </strong>
+
+            </div>
+
+
+            <div className="fila-resumen">
+
+              <span>
+                Envío
+              </span>
+
+              <span className="texto-envio">
+                Calculado en el siguiente paso
+              </span>
+
+            </div>
+
+
+            <div className="separador-resumen"></div>
+
+
+            <div className="total-carrito-nuevo">
+
+              <span>
+                Total
+              </span>
+
+              <strong>
+                ${totalFormateado}
+              </strong>
+
+            </div>
+
+
+            <Link
+              to="/checkout"
+              className="boton-carrito-principal"
+            >
+              CONTINUAR COMPRA
+              <i className="bi bi-arrow-right"></i>
+            </Link>
+
+
+            <div className="seguridad-carrito">
+
+              <i className="bi bi-shield-check"></i>
+
+              <div>
+                <strong>
+                  Compra segura
+                </strong>
+
+                <span>
+                  Tus datos están protegidos.
+                </span>
+              </div>
+
+            </div>
+
+          </aside>
+
+        </div>
+
+      </div>
+
+    </section>
   );
 }
 
