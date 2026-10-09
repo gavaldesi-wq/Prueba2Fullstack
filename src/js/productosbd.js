@@ -61,6 +61,8 @@ const productos = [
     marca: "Gigabyte",
     modelo: "RTX 5060 Ti 16GB",
     precio: 699990,
+    precioAnterior: 799990,
+    oferta: true,
     stock: 12,
     imagen: rtx5060TiImg,
     descripcionCorta:
@@ -112,6 +114,8 @@ const productos = [
     marca: "Intel",
     modelo: "Core i9-12900K",
     precio: 589990,
+    precioAnterior: 699990,
+    oferta: true,
     stock: 7,
     imagen: intelImg,
     descripcionCorta:
@@ -186,6 +190,8 @@ const productos = [
     marca: "Corsair",
     modelo: "Vengeance RGB DDR5",
     precio: 189990,
+    precioAnterior: 1799990,
+    oferta: true,
     stock: 18,
     imagen: ramImg,
     descripcionCorta:
@@ -209,6 +215,8 @@ const productos = [
     marca: "Kingston",
     modelo: "Fury Beast DDR5",
     precio: 159990,
+    precioAnterior: 1179990,
+    oferta: true,
     stock: 21,
     imagen: kingstonRamImg,
     descripcionCorta:
@@ -260,6 +268,8 @@ const productos = [
     marca: "Samsung",
     modelo: "990 Pro 2TB",
     precio: 159990,
+    precioAnterior: 149990,
+    oferta: true,
     stock: 16,
     imagen: ssdImg,
     descripcionCorta:
@@ -334,6 +344,8 @@ const productos = [
     marca: "PC-SHOP",
     modelo: "Gaming Starter 1440p",
     precio: 1299990,
+    precioAnterior: 1530990,
+    oferta: true,
     stock: 4,
     imagen: pc5060TiImg,
     descripcionCorta:

@@ -303,7 +303,7 @@ function Home({ agregarAlCarrito }) {
       <section className="container seccion-banner-notebooks">
 
         <Link
-          to="/productos?buscar=Notebooks"
+          to="/productos?categoria=Notebooks"
           className="enlace-banner-notebooks"
         >
 
@@ -333,7 +333,7 @@ function Home({ agregarAlCarrito }) {
 
 
           <Link
-            to="/productos?buscar=Notebooks"
+            to="/productos?categoria=Notebooks"
             className="boton-ver-productos"
           >
             Ver notebooks

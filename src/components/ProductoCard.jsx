@@ -1,19 +1,30 @@
 import { Link } from "react-router-dom";
 
+
 function ProductoCard({ producto, agregarAlCarrito }) {
 
   const precioFormateado =
     producto.precio.toLocaleString("es-CL");
 
+  const precioAnteriorFormateado =
+    producto.precioAnterior?.toLocaleString("es-CL");
+
+
   return (
+
     <div className="col-12 col-sm-6 col-lg-3">
 
       <div className="tarjeta-producto">
 
 
-        {/* IMAGEN */}
-
         <div className="contenedor-imagen-producto">
+
+          {producto.oferta && (
+            <span className="etiqueta-oferta">
+              Oferta
+            </span>
+          )}
+
 
           <Link to={`/producto/${producto.id}`}>
 
@@ -27,8 +38,6 @@ function ProductoCard({ producto, agregarAlCarrito }) {
         </div>
 
 
-        {/* INFORMACIÓN */}
-
         <div className="contenido-producto">
 
           <h3 className="nombre-producto">
@@ -39,6 +48,15 @@ function ProductoCard({ producto, agregarAlCarrito }) {
           <span className="texto-desde">
             Desde:
           </span>
+
+
+          {producto.oferta && (
+
+            <p className="precio-anterior">
+              ${precioAnteriorFormateado}
+            </p>
+
+          )}
 
 
           <p className="precio-producto">
@@ -62,10 +80,15 @@ function ProductoCard({ producto, agregarAlCarrito }) {
           <button
             type="button"
             className="boton-agregar-card"
-            onClick={() => agregarAlCarrito(producto)}
+            onClick={() =>
+              agregarAlCarrito(producto)
+            }
           >
+
             <i className="bi bi-cart3"></i>
+
             Agregar al carrito
+
           </button>
 
         </div>
@@ -73,7 +96,9 @@ function ProductoCard({ producto, agregarAlCarrito }) {
       </div>
 
     </div>
+
   );
 }
+
 
 export default ProductoCard;

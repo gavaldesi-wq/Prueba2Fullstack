@@ -10,38 +10,25 @@ import {
 
 function Contacto() {
 
-  const [formulario, setFormulario] =
-    useState({
+  const [formulario, setFormulario] = useState({
+    nombre: "",
+    correo: "",
+    telefono: "",
+    asunto: "",
+    mensaje: ""
+  });
 
-      nombre: "",
-      correo: "",
-      telefono: "",
-      asunto: "",
-      mensaje: ""
-
-    });
-
-
-  const [error, setError] =
-    useState("");
-
-
-  const [exito, setExito] =
-    useState("");
+  const [error, setError] = useState("");
+  const [exito, setExito] = useState("");
 
 
   function manejarCambio(evento) {
 
-    const { name, value } =
-      evento.target;
-
+    const { name, value } = evento.target;
 
     setFormulario({
-
       ...formulario,
-
       [name]: value
-
     });
 
   }
@@ -63,99 +50,61 @@ function Contacto() {
       formulario.mensaje.trim() === ""
     ) {
 
-      setError(
-        "Debes completar todos los campos."
-      );
+      setError("Debes completar todos los campos.");
 
       return;
     }
 
 
-    if (
-      !validarNombre(
-        formulario.nombre
-      )
-    ) {
+    if (!validarNombre(formulario.nombre)) {
 
-      setError(
-        "El nombre ingresado no es válido."
-      );
+      setError("El nombre ingresado no es válido.");
 
       return;
     }
 
 
-    if (
-      !validarCorreo(
-        formulario.correo
-      )
-    ) {
+    if (!validarCorreo(formulario.correo)) {
 
-      setError(
-        "El correo ingresado no es válido."
-      );
+      setError("El correo ingresado no es válido.");
 
       return;
     }
 
 
-    if (
-      !validarTelefono(
-        formulario.telefono
-      )
-    ) {
+    if (!validarTelefono(formulario.telefono)) {
 
-      setError(
-        "El teléfono ingresado no es válido."
-      );
+      setError("El teléfono ingresado no es válido.");
 
       return;
     }
 
 
-    if (
-      !validarTexto(
-        formulario.asunto,
-        3
-      )
-    ) {
+    if (!validarTexto(formulario.asunto, 3)) {
 
-      setError(
-        "El asunto debe tener al menos 3 caracteres."
-      );
+      setError("El asunto debe tener al menos 3 caracteres.");
 
       return;
     }
 
 
-    if (
-      !validarTexto(
-        formulario.mensaje,
-        10
-      )
-    ) {
+    if (!validarTexto(formulario.mensaje, 10)) {
 
-      setError(
-        "El mensaje debe tener al menos 10 caracteres."
-      );
+      setError("El mensaje debe tener al menos 10 caracteres.");
 
       return;
     }
 
 
-    setExito(
-      "Mensaje enviado correctamente."
-    );
+    setExito("Mensaje enviado correctamente.");
 
 
     setFormulario({
-
       nombre: "",
       correo: "",
       telefono: "",
       asunto: "",
       mensaje: ""
-
     });
 
   }
@@ -163,144 +112,266 @@ function Contacto() {
 
   return (
 
-    <div className="container mt-5 mb-5">
+    <section className="pagina-contacto">
 
-      <div className="row justify-content-center">
+      <div className="container">
 
-        <div className="col-12 col-md-8 col-lg-6">
-
-          <h1 className="titulo-seccion text-center">
-            Contacto
-          </h1>
+        <div className="contenedor-contacto">
 
 
-          <p className="texto-pagina text-center mb-4">
-            Escríbenos y nos pondremos en contacto contigo.
-          </p>
+          {/* =========================
+              INFORMACIÓN
+          ========================= */}
 
+          <div className="contacto-informacion">
 
-          <form onSubmit={manejarEnvio}>
+            <div className="encabezado-contacto">
 
+              <h1>
+                Contacto
+              </h1>
 
-            <div className="mb-3">
-
-              <label className="form-label">
-                Nombre completo
-              </label>
-
-              <input
-                type="text"
-                className="form-control"
-                name="nombre"
-                value={formulario.nombre}
-                onChange={manejarCambio}
-              />
+              <p>
+                Estamos para ayudarte
+              </p>
 
             </div>
 
 
-            <div className="mb-3">
-
-              <label className="form-label">
-                Correo electrónico
-              </label>
-
-              <input
-                type="email"
-                className="form-control"
-                name="correo"
-                value={formulario.correo}
-                onChange={manejarCambio}
-              />
-
-            </div>
+            <div className="lista-contacto">
 
 
-            <div className="mb-3">
+              <div className="dato-contacto">
 
-              <label className="form-label">
-                Teléfono
-              </label>
+                <div className="icono-contacto">
+                  <i className="bi bi-headset"></i>
+                </div>
 
-              <input
-                type="tel"
-                className="form-control"
-                name="telefono"
-                placeholder="912345678"
-                value={formulario.telefono}
-                onChange={manejarCambio}
-              />
+                <div>
 
-            </div>
+                  <h3>
+                    Atención al cliente
+                  </h3>
 
+                  <p>
+                    Lun a Vie de 9:00 a 18:00 hrs
+                  </p>
 
-            <div className="mb-3">
+                </div>
 
-              <label className="form-label">
-                Asunto
-              </label>
-
-              <input
-                type="text"
-                className="form-control"
-                name="asunto"
-                value={formulario.asunto}
-                onChange={manejarCambio}
-              />
-
-            </div>
-
-
-            <div className="mb-3">
-
-              <label className="form-label">
-                Mensaje
-              </label>
-
-              <textarea
-                className="form-control"
-                name="mensaje"
-                rows="5"
-                value={formulario.mensaje}
-                onChange={manejarCambio}
-              ></textarea>
-
-            </div>
-
-
-            {error && (
-
-              <div className="alert alert-danger">
-                {error}
               </div>
 
-            )}
 
+              <div className="dato-contacto">
 
-            {exito && (
+                <div className="icono-contacto">
+                  <i className="bi bi-envelope"></i>
+                </div>
 
-              <div className="alert alert-success">
-                {exito}
+                <div>
+
+                  <h3>
+                    Correo electrónico
+                  </h3>
+
+                  <p>
+                    contacto@pcshop.cl
+                  </p>
+
+                </div>
+
               </div>
 
-            )}
+
+              <div className="dato-contacto">
+
+                <div className="icono-contacto">
+                  <i className="bi bi-telephone"></i>
+                </div>
+
+                <div>
+
+                  <h3>
+                    Teléfono
+                  </h3>
+
+                  <p>
+                    +56 9 1234 5678
+                  </p>
+
+                </div>
+
+              </div>
 
 
-            <button
-              type="submit"
-              className="btn boton-cyan w-100"
-            >
-              ENVIAR MENSAJE
-            </button>
+              <div className="dato-contacto">
+
+                <div className="icono-contacto">
+                  <i className="bi bi-geo-alt"></i>
+                </div>
+
+                <div>
+
+                  <h3>
+                    Nuestra ubicación
+                  </h3>
+
+                  <p>
+                    Santiago, Chile
+                  </p>
+
+                </div>
+
+              </div>
 
 
-          </form>
+            </div>
+
+          </div>
+
+
+          {/* =========================
+              FORMULARIO
+          ========================= */}
+
+          <div className="contacto-formulario">
+
+            <form onSubmit={manejarEnvio}>
+
+
+              <div className="campo-contacto">
+
+                <label>
+                  Nombre completo
+                </label>
+
+                <input
+                  type="text"
+                  name="nombre"
+                  placeholder="Tu nombre completo"
+                  value={formulario.nombre}
+                  onChange={manejarCambio}
+                />
+
+              </div>
+
+
+              <div className="campo-contacto">
+
+                <label>
+                  Correo electrónico
+                </label>
+
+                <input
+                  type="email"
+                  name="correo"
+                  placeholder="tu@email.com"
+                  value={formulario.correo}
+                  onChange={manejarCambio}
+                />
+
+              </div>
+
+
+              <div className="campo-contacto">
+
+                <label>
+                  Teléfono
+                </label>
+
+                <input
+                  type="tel"
+                  name="telefono"
+                  placeholder="912345678"
+                  value={formulario.telefono}
+                  onChange={manejarCambio}
+                />
+
+              </div>
+
+
+              <div className="campo-contacto">
+
+                <label>
+                  Asunto
+                </label>
+
+                <input
+                  type="text"
+                  name="asunto"
+                  placeholder="¿En qué podemos ayudarte?"
+                  value={formulario.asunto}
+                  onChange={manejarCambio}
+                />
+
+              </div>
+
+
+              <div className="campo-contacto">
+
+                <label>
+                  Mensaje
+                </label>
+
+                <textarea
+                  name="mensaje"
+                  rows="5"
+                  placeholder="Escribe tu mensaje aquí..."
+                  value={formulario.mensaje}
+                  onChange={manejarCambio}
+                ></textarea>
+
+              </div>
+
+
+              {error && (
+
+                <div className="mensaje-contacto mensaje-contacto-error">
+
+                  <i className="bi bi-exclamation-circle"></i>
+
+                  {error}
+
+                </div>
+
+              )}
+
+
+              {exito && (
+
+                <div className="mensaje-contacto mensaje-contacto-exito">
+
+                  <i className="bi bi-check-circle"></i>
+
+                  {exito}
+
+                </div>
+
+              )}
+
+
+              <button
+                type="submit"
+                className="boton-enviar-contacto"
+              >
+
+                ENVIAR MENSAJE
+
+                <i className="bi bi-arrow-right"></i>
+
+              </button>
+
+
+            </form>
+
+          </div>
+
 
         </div>
 
       </div>
 
-    </div>
+    </section>
 
   );
 }

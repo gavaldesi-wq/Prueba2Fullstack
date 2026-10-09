@@ -1,566 +1,359 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import {
   validarNombre,
   validarCorreo,
   validarTelefono,
-  validarRut,
-  validarPassword,
   validarTexto
 } from "../js/validaciones";
 
-import {
-  buscarUsuarioPorCorreo,
-  buscarUsuarioPorRut,
-  agregarUsuario
-} from "../js/usuariosBD";
-
-
 function Registro() {
 
-  const navigate = useNavigate();
+  const [formulario, setFormulario] = useState({
+    nombre: "",
+    rut: "",
+    correo: "",
+    telefono: "",
+    region: "",
+    ciudad: "",
+    direccion: "",
+    contrasena: "",
+    confirmarContrasena: ""
+  });
 
-
-  const [formulario, setFormulario] =
-    useState({
-
-      nombre: "",
-      rut: "",
-      telefono: "",
-      correo: "",
-      region: "",
-      ciudad: "",
-      direccion: "",
-      password: "",
-      confirmarPassword: ""
-
-    });
-
-
-  const [mensaje, setMensaje] =
-    useState("");
-
+  const [error, setError] = useState("");
+  const [exito, setExito] = useState("");
 
   function manejarCambio(evento) {
-
-    const { name, value } =
-      evento.target;
+    const { name, value } = evento.target;
 
     setFormulario({
       ...formulario,
       [name]: value
     });
-
   }
 
-
-  function manejarRegistro(evento) {
-
+  function manejarEnvio(evento) {
     evento.preventDefault();
 
-    setMensaje("");
-
-
-    // CAMPOS VACÍOS
+    setError("");
+    setExito("");
 
     if (
       formulario.nombre.trim() === "" ||
       formulario.rut.trim() === "" ||
-      formulario.telefono.trim() === "" ||
       formulario.correo.trim() === "" ||
-      formulario.region === "" ||
+      formulario.telefono.trim() === "" ||
+      formulario.region.trim() === "" ||
       formulario.ciudad.trim() === "" ||
       formulario.direccion.trim() === "" ||
-      formulario.password === "" ||
-      formulario.confirmarPassword === ""
+      formulario.contrasena.trim() === "" ||
+      formulario.confirmarContrasena.trim() === ""
     ) {
-
-      setMensaje(
-        "Debes completar todos los campos."
-      );
-
+      setError("Debes completar todos los campos.");
       return;
     }
-
-
-    // NOMBRE
 
     if (!validarNombre(formulario.nombre)) {
-
-      setMensaje(
-        "El nombre solo debe contener letras y espacios."
-      );
-
+      setError("El nombre ingresado no es válido.");
       return;
     }
-
-
-    // RUT
-
-    if (!validarRut(formulario.rut)) {
-
-      setMensaje(
-        "El RUT debe tener un formato válido. Ej: 12345678-9."
-      );
-
-      return;
-    }
-
-
-    // TELÉFONO
-
-    if (!validarTelefono(formulario.telefono)) {
-
-      setMensaje(
-        "Ingresa un teléfono válido. Ej: 912345678."
-      );
-
-      return;
-    }
-
-
-    // CORREO
 
     if (!validarCorreo(formulario.correo)) {
-
-      setMensaje(
-        "El correo no tiene un formato válido."
-      );
-
+      setError("El correo ingresado no es válido.");
       return;
     }
 
+    if (!validarTelefono(formulario.telefono)) {
+      setError("El teléfono ingresado no es válido.");
+      return;
+    }
 
-    // CIUDAD
+    if (!validarTexto(formulario.region, 2)) {
+      setError("La región ingresada no es válida.");
+      return;
+    }
 
     if (!validarTexto(formulario.ciudad, 2)) {
-
-      setMensaje(
-        "Ingresa una ciudad válida."
-      );
-
+      setError("La ciudad ingresada no es válida.");
       return;
     }
-
-
-    // DIRECCIÓN
 
     if (!validarTexto(formulario.direccion, 5)) {
-
-      setMensaje(
-        "La dirección debe tener al menos 5 caracteres."
-      );
-
+      setError("La dirección ingresada no es válida.");
       return;
     }
 
-
-    // CONTRASEÑA
-
-    if (!validarPassword(formulario.password)) {
-
-      setMensaje(
-        "La contraseña debe tener al menos 6 caracteres, una letra y un número."
-      );
-
+    if (formulario.contrasena.length < 6) {
+      setError("La contraseña debe tener al menos 6 caracteres.");
       return;
     }
 
-
-    // CONFIRMAR CONTRASEÑA
-
-    if (
-      formulario.password !==
-      formulario.confirmarPassword
-    ) {
-
-      setMensaje(
-        "Las contraseñas no coinciden."
-      );
-
+    if (formulario.contrasena !== formulario.confirmarContrasena) {
+      setError("Las contraseñas no coinciden.");
       return;
     }
 
+    const usuariosGuardados =
+      JSON.parse(localStorage.getItem("usuariosRegistrados")) || [];
 
-    // CORREO REPETIDO
-
-    const correoExistente =
-      buscarUsuarioPorCorreo(
-        formulario.correo
-      );
-
+    const correoExistente = usuariosGuardados.find(
+      (usuario) =>
+        usuario.correo.toLowerCase() === formulario.correo.toLowerCase()
+    );
 
     if (correoExistente) {
-
-      setMensaje(
-        "Ya existe un usuario con ese correo."
-      );
-
+      setError("Ya existe una cuenta con ese correo.");
       return;
     }
-
-
-    // RUT REPETIDO
-
-    const rutExistente =
-      buscarUsuarioPorRut(
-        formulario.rut
-      );
-
-
-    if (rutExistente) {
-
-      setMensaje(
-        "Ya existe un usuario con ese RUT."
-      );
-
-      return;
-    }
-
-
-    // LIMPIAR RUT
-
-    const rutLimpio =
-      formulario.rut
-        .replace(/\./g, "")
-        .replace(/\s/g, "");
-
-
-    // LIMPIAR TELÉFONO
-
-    const telefonoLimpio =
-      formulario.telefono
-        .replace(/\s/g, "");
-
-
-    // CREAR USUARIO
 
     const nuevoUsuario = {
-
       id: Date.now(),
-
-      nombre:
-        formulario.nombre.trim(),
-
-      rut:
-        rutLimpio,
-
-      telefono:
-        telefonoLimpio,
-
-      correo:
-        formulario.correo
-          .trim()
-          .toLowerCase(),
-
-      region:
-        formulario.region,
-
-      ciudad:
-        formulario.ciudad.trim(),
-
-      direccion:
-        formulario.direccion.trim(),
-
-      password:
-        formulario.password
-
+      nombre: formulario.nombre,
+      rut: formulario.rut,
+      correo: formulario.correo,
+      telefono: formulario.telefono,
+      region: formulario.region,
+      ciudad: formulario.ciudad,
+      direccion: formulario.direccion,
+      contrasena: formulario.contrasena
     };
 
-
-    // GUARDAR USUARIO
-
-    agregarUsuario(
-      nuevoUsuario
+    localStorage.setItem(
+      "usuariosRegistrados",
+      JSON.stringify([...usuariosGuardados, nuevoUsuario])
     );
 
+    setExito("Cuenta creada correctamente.");
 
-    alert(
-      "Usuario registrado correctamente."
-    );
-
-
-    navigate("/login");
+    setFormulario({
+      nombre: "",
+      rut: "",
+      correo: "",
+      telefono: "",
+      region: "",
+      ciudad: "",
+      direccion: "",
+      contrasena: "",
+      confirmarContrasena: ""
+    });
   }
 
-
   return (
+    <section className="pagina-registro">
+      <div className="container">
 
-    <div className="container mt-5 mb-5">
+        <div className="registro-contenedor">
 
-      <div className="row justify-content-center">
+          <div className="registro-info">
 
-        <div className="col-12 col-md-8 col-lg-6">
+            <div>
+              <h1>Crea tu cuenta</h1>
+              <p>
+                Únete a PC-SHOP y disfruta de una mejor experiencia.
+              </p>
+            </div>
 
-          <h1 className="titulo-seccion text-center">
-            Crear Cuenta
-          </h1>
+            <div className="registro-beneficios">
 
+              <div className="registro-beneficio">
+                <div className="registro-icono">
+                  <i className="bi bi-shield-check"></i>
+                </div>
 
-          <form
-            className="mt-4"
-            onSubmit={manejarRegistro}
-          >
+                <div>
+                  <h3>Compra de forma segura</h3>
+                  <p>Tus datos están protegidos.</p>
+                </div>
+              </div>
 
+              <div className="registro-beneficio">
+                <div className="registro-icono">
+                  <i className="bi bi-truck"></i>
+                </div>
 
-            <div className="mb-3">
+                <div>
+                  <h3>Seguimiento de tus pedidos</h3>
+                  <p>Revisa el estado de tus compras.</p>
+                </div>
+              </div>
 
-              <label className="form-label">
-                Nombre completo
-              </label>
+              <div className="registro-beneficio">
+                <div className="registro-icono">
+                  <i className="bi bi-gear"></i>
+                </div>
 
-              <input
-                type="text"
-                className="form-control"
-                name="nombre"
-                value={formulario.nombre}
-                onChange={manejarCambio}
-              />
+                <div>
+                  <h3>Una mejor experiencia</h3>
+                  <p>Compra más rápido y fácil.</p>
+                </div>
+              </div>
 
             </div>
 
+          </div>
 
-            <div className="mb-3">
+          <div className="registro-formulario">
 
-              <label className="form-label">
-                RUT
-              </label>
+            <h2>Crear cuenta</h2>
 
-              <input
-                type="text"
-                className="form-control"
-                name="rut"
-                placeholder="12345678-9"
-                value={formulario.rut}
-                onChange={manejarCambio}
-              />
+            <p className="registro-subtitulo">
+              Completa tus datos para registrarte.
+            </p>
 
-            </div>
+            <form onSubmit={manejarEnvio}>
 
+              <div className="registro-grid">
 
-            <div className="mb-3">
+                <div className="campo-registro">
+                  <label>Nombre completo</label>
 
-              <label className="form-label">
-                Teléfono
-              </label>
+                  <input
+                    type="text"
+                    name="nombre"
+                    placeholder="Tu nombre completo"
+                    value={formulario.nombre}
+                    onChange={manejarCambio}
+                  />
+                </div>
 
-              <input
-                type="tel"
-                className="form-control"
-                name="telefono"
-                placeholder="912345678"
-                value={formulario.telefono}
-                onChange={manejarCambio}
-              />
+                <div className="campo-registro">
+                  <label>RUT</label>
 
-            </div>
+                  <input
+                    type="text"
+                    name="rut"
+                    placeholder="12.345.678-9"
+                    value={formulario.rut}
+                    onChange={manejarCambio}
+                  />
+                </div>
 
+                <div className="campo-registro">
+                  <label>Correo electrónico</label>
 
-            <div className="mb-3">
+                  <input
+                    type="email"
+                    name="correo"
+                    placeholder="tu@email.com"
+                    value={formulario.correo}
+                    onChange={manejarCambio}
+                  />
+                </div>
 
-              <label className="form-label">
-                Correo electrónico
-              </label>
+                <div className="campo-registro">
+                  <label>Teléfono</label>
 
-              <input
-                type="email"
-                className="form-control"
-                name="correo"
-                value={formulario.correo}
-                onChange={manejarCambio}
-              />
+                  <input
+                    type="tel"
+                    name="telefono"
+                    placeholder="912345678"
+                    value={formulario.telefono}
+                    onChange={manejarCambio}
+                  />
+                </div>
 
-            </div>
+                <div className="campo-registro">
+                  <label>Región</label>
 
+                  <input
+                    type="text"
+                    name="region"
+                    placeholder="Región Metropolitana"
+                    value={formulario.region}
+                    onChange={manejarCambio}
+                  />
+                </div>
 
-            <div className="mb-3">
+                <div className="campo-registro">
+                  <label>Ciudad</label>
 
-              <label className="form-label">
-                Región
-              </label>
+                  <input
+                    type="text"
+                    name="ciudad"
+                    placeholder="Santiago"
+                    value={formulario.ciudad}
+                    onChange={manejarCambio}
+                  />
+                </div>
 
-              <select
-                className="form-select"
-                name="region"
-                value={formulario.region}
-                onChange={manejarCambio}
-              >
+                <div className="campo-registro campo-registro-completo">
+                  <label>Dirección</label>
 
-                <option value="">
-                  Selecciona una región
-                </option>
+                  <input
+                    type="text"
+                    name="direccion"
+                    placeholder="Tu dirección"
+                    value={formulario.direccion}
+                    onChange={manejarCambio}
+                  />
+                </div>
 
-                <option value="Arica y Parinacota">
-                  Arica y Parinacota
-                </option>
+                <div className="campo-registro">
+                  <label>Contraseña</label>
 
-                <option value="Tarapaca">
-                  Tarapacá
-                </option>
+                  <input
+                    type="password"
+                    name="contrasena"
+                    placeholder="Mínimo 6 caracteres"
+                    value={formulario.contrasena}
+                    onChange={manejarCambio}
+                  />
+                </div>
 
-                <option value="Antofagasta">
-                  Antofagasta
-                </option>
+                <div className="campo-registro">
+                  <label>Confirmar contraseña</label>
 
-                <option value="Atacama">
-                  Atacama
-                </option>
-
-                <option value="Coquimbo">
-                  Coquimbo
-                </option>
-
-                <option value="Valparaiso">
-                  Valparaíso
-                </option>
-
-                <option value="Metropolitana">
-                  Metropolitana
-                </option>
-
-                <option value="OHiggins">
-                  O'Higgins
-                </option>
-
-                <option value="Maule">
-                  Maule
-                </option>
-
-                <option value="Nuble">
-                  Ñuble
-                </option>
-
-                <option value="Biobio">
-                  Biobío
-                </option>
-
-                <option value="Araucania">
-                  La Araucanía
-                </option>
-
-                <option value="Los Rios">
-                  Los Ríos
-                </option>
-
-                <option value="Los Lagos">
-                  Los Lagos
-                </option>
-
-                <option value="Aysen">
-                  Aysén
-                </option>
-
-                <option value="Magallanes">
-                  Magallanes
-                </option>
-
-              </select>
-
-            </div>
-
-
-            <div className="mb-3">
-
-              <label className="form-label">
-                Ciudad
-              </label>
-
-              <input
-                type="text"
-                className="form-control"
-                name="ciudad"
-                value={formulario.ciudad}
-                onChange={manejarCambio}
-              />
-
-            </div>
-
-
-            <div className="mb-3">
-
-              <label className="form-label">
-                Dirección
-              </label>
-
-              <input
-                type="text"
-                className="form-control"
-                name="direccion"
-                value={formulario.direccion}
-                onChange={manejarCambio}
-              />
-
-            </div>
-
-
-            <div className="mb-3">
-
-              <label className="form-label">
-                Contraseña
-              </label>
-
-              <input
-                type="password"
-                className="form-control"
-                name="password"
-                value={formulario.password}
-                onChange={manejarCambio}
-              />
-
-              <small className="text-secondary">
-                Mínimo 6 caracteres, una letra y un número.
-              </small>
-
-            </div>
-
-
-            <div className="mb-3">
-
-              <label className="form-label">
-                Confirmar contraseña
-              </label>
-
-              <input
-                type="password"
-                className="form-control"
-                name="confirmarPassword"
-                value={formulario.confirmarPassword}
-                onChange={manejarCambio}
-              />
-
-            </div>
-
-
-            {mensaje && (
-
-              <div className="alert alert-danger">
-
-                {mensaje}
+                  <input
+                    type="password"
+                    name="confirmarContrasena"
+                    placeholder="Repite tu contraseña"
+                    value={formulario.confirmarContrasena}
+                    onChange={manejarCambio}
+                  />
+                </div>
 
               </div>
 
-            )}
+              {error && (
+                <div className="registro-mensaje registro-error">
+                  <i className="bi bi-exclamation-circle"></i>
+                  {error}
+                </div>
+              )}
 
+              {exito && (
+                <div className="registro-mensaje registro-exito">
+                  <i className="bi bi-check-circle"></i>
+                  {exito}
+                </div>
+              )}
 
-            <button
-              type="submit"
-              className="btn boton-cyan w-100"
-            >
-              REGISTRARSE
-            </button>
+              <button
+                type="submit"
+                className="boton-crear-cuenta"
+              >
+                CREAR CUENTA
+                <i className="bi bi-arrow-right"></i>
+              </button>
 
+            </form>
 
-          </form>
+            <div className="registro-login">
+              <span>¿Ya tienes una cuenta?</span>
+              <Link to="/login">
+                Iniciar sesión
+              </Link>
+            </div>
+
+          </div>
 
         </div>
 
       </div>
-
-    </div>
-
+    </section>
   );
 }
-
 
 export default Registro;
