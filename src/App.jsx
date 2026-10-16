@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-
+import Checkout from "./components/Checkout";
+import CompraExitosa from "./components/CompraExitosa";
+import PagoFallido from "./components/PagoFallido";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./components/Home";
@@ -148,6 +150,10 @@ function App() {
     setCarrito(carritoActualizado);
   }
 
+  function vaciarCarrito() {
+  setCarrito([]);
+}
+
 
   /* =========================
      DISMINUIR CANTIDAD
@@ -233,6 +239,31 @@ function App() {
               aumentarCantidad={aumentarCantidad}
               disminuirCantidad={disminuirCantidad}
             />
+          }
+        />
+
+                <Route
+          path="/checkout"
+          element={
+            <Checkout
+              carrito={carrito}
+              usuarioActivo={usuarioActivo}
+              vaciarCarrito={vaciarCarrito}
+            />
+          }
+        />
+
+        <Route
+          path="/compra-exitosa"
+          element={
+            <CompraExitosa />
+          }
+        />
+
+        <Route
+          path="/pago-fallido"
+          element={
+            <PagoFallido />
           }
         />
 

@@ -8,6 +8,12 @@ import {
   validarTexto
 } from "../js/validaciones";
 
+import {
+  agregarUsuario,
+  buscarUsuarioPorCorreo,
+  buscarUsuarioPorRut
+} from "../js/usuariosBD";
+
 function Registro() {
 
   const [formulario, setFormulario] = useState({
@@ -117,13 +123,10 @@ function Registro() {
       region: formulario.region,
       ciudad: formulario.ciudad,
       direccion: formulario.direccion,
-      contrasena: formulario.contrasena
+       password: formulario.contrasena
     };
 
-    localStorage.setItem(
-      "usuariosRegistrados",
-      JSON.stringify([...usuariosGuardados, nuevoUsuario])
-    );
+    agregarUsuario(nuevoUsuario);
 
     setExito("Cuenta creada correctamente.");
 
@@ -255,15 +258,30 @@ function Registro() {
                 </div>
 
                 <div className="campo-registro">
-                  <label>Región</label>
-
-                  <input
-                    type="text"
+                  <select
                     name="region"
-                    placeholder="Región Metropolitana"
+                    className="form-select input-registro"
                     value={formulario.region}
                     onChange={manejarCambio}
-                  />
+                  >
+                    <option value="">Selecciona una región</option>
+                    <option value="Arica y Parinacota">Arica y Parinacota</option>
+                    <option value="Tarapacá">Tarapacá</option>
+                    <option value="Antofagasta">Antofagasta</option>
+                    <option value="Atacama">Atacama</option>
+                    <option value="Coquimbo">Coquimbo</option>
+                    <option value="Valparaíso">Valparaíso</option>
+                    <option value="Región Metropolitana">Región Metropolitana</option>
+                    <option value="O'Higgins">O'Higgins</option>
+                    <option value="Maule">Maule</option>
+                    <option value="Ñuble">Ñuble</option>
+                    <option value="Biobío">Biobío</option>
+                    <option value="La Araucanía">La Araucanía</option>
+                    <option value="Los Ríos">Los Ríos</option>
+                    <option value="Los Lagos">Los Lagos</option>
+                    <option value="Aysén">Aysén</option>
+                    <option value="Magallanes">Magallanes</option>
+                  </select>
                 </div>
 
                 <div className="campo-registro">

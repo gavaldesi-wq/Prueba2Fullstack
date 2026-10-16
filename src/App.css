@@ -2325,6 +2325,113 @@ footer a:hover {
     grid-column: 3 / 4;
   }
 }
+.form-select.input-registro {
+  background-color: var(--fondo-input) !important;
+  border: 1px solid var(--borde-suave) !important;
+  color: var(--texto-principal) !important;
+}
+
+.form-select.input-registro:focus {
+  background-color: var(--fondo-input) !important;
+  border-color: var(--cian) !important;
+  color: var(--texto-principal) !important;
+  box-shadow: 0 0 0 2px rgba(0, 217, 232, 0.12) !important;
+}
+
+.form-select.input-registro option {
+  background: var(--fondo-input);
+  color: var(--texto-principal);
+}
+
+/* =========================================================
+   CHECKOUT
+========================================================= */
+
+.checkout-panel {
+  padding: 28px;
+  background: var(--fondo-tarjeta);
+  border: 1px solid var(--borde-suave);
+  border-radius: 8px;
+}
+
+.checkout-titulo {
+  margin-bottom: 24px;
+  color: var(--texto-principal);
+  font-family: "Rajdhani", sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.input-checkout {
+  background: var(--fondo-input) !important;
+  border: 1px solid var(--borde-suave) !important;
+  color: var(--texto-principal) !important;
+}
+
+.input-checkout:focus {
+  border-color: var(--cian) !important;
+  box-shadow: 0 0 0 2px rgba(0, 217, 232, 0.12) !important;
+}
+
+.opcion-entrega {
+  width: 100%;
+  min-height: 90px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--fondo-input);
+  border: 1px solid var(--borde-suave);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.opcion-entrega:hover {
+  border-color: var(--cian);
+}
+
+.opcion-entrega div {
+  display: flex;
+  flex-direction: column;
+}
+
+.opcion-entrega span {
+  margin-top: 3px;
+  color: var(--cian);
+  font-size: 0.85rem;
+}
+
+.checkout-resumen {
+  position: sticky;
+  top: 20px;
+}
+
+.precio-checkout {
+  color: var(--cian);
+  font-size: 1.5rem;
+}
+
+.compra-resultado {
+  max-width: 750px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.icono-compra-exitosa,
+.icono-pago-fallido {
+  display: block;
+  margin-bottom: 20px;
+  font-size: 4rem;
+}
+
+.icono-compra-exitosa {
+  color: #33d17a;
+}
+
+.icono-pago-fallido {
+  color: #ff5b5b;
+}
+
 
 /* =========================================================
    ALTURA DE PÁGINA / FOOTER
