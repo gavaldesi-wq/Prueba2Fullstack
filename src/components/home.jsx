@@ -42,12 +42,11 @@ function Home({ agregarAlCarrito }) {
 
 
   return (
+
     <main>
 
 
-      {/* =================================================
-          CARRUSEL PRINCIPAL
-      ================================================= */}
+      {/* CARRUSEL */}
 
       <section className="seccion-carrusel">
 
@@ -60,8 +59,6 @@ function Home({ agregarAlCarrito }) {
             data-bs-interval="5000"
           >
 
-
-            {/* INDICADORES */}
 
             <div className="carousel-indicators">
 
@@ -81,8 +78,6 @@ function Home({ agregarAlCarrito }) {
 
             </div>
 
-
-            {/* IMÁGENES */}
 
             <div className="carousel-inner">
 
@@ -117,8 +112,6 @@ function Home({ agregarAlCarrito }) {
             </div>
 
 
-            {/* FLECHA IZQUIERDA */}
-
             <button
               className="carousel-control-prev"
               type="button"
@@ -138,8 +131,6 @@ function Home({ agregarAlCarrito }) {
             </button>
 
 
-            {/* FLECHA DERECHA */}
-
             <button
               className="carousel-control-next"
               type="button"
@@ -158,6 +149,7 @@ function Home({ agregarAlCarrito }) {
 
             </button>
 
+
           </div>
 
         </div>
@@ -165,9 +157,7 @@ function Home({ agregarAlCarrito }) {
       </section>
 
 
-      {/* =================================================
-          BENEFICIOS
-      ================================================= */}
+      {/* BENEFICIOS */}
 
       <section className="container my-5">
 
@@ -249,21 +239,19 @@ function Home({ agregarAlCarrito }) {
 
           </div>
 
+
         </div>
 
       </section>
 
 
-      {/* =================================================
-          PRODUCTOS DESTACADOS
-      ================================================= */}
+      {/* PRODUCTOS DESTACADOS */}
 
       <section className="container mb-5">
 
-
         <div className="encabezado-destacados">
 
-          <h2 className="titulo-productos-destacados">
+          <h2 className="titulo-productos-destacados titulo-secundario">
             Productos Destacados
           </h2>
 
@@ -296,9 +284,7 @@ function Home({ agregarAlCarrito }) {
       </section>
 
 
-      {/* =================================================
-          BANNER NOTEBOOKS
-      ================================================= */}
+      {/* BANNER NOTEBOOKS */}
 
       <section className="container seccion-banner-notebooks">
 
@@ -318,16 +304,13 @@ function Home({ agregarAlCarrito }) {
       </section>
 
 
-      {/* =================================================
-          NOTEBOOKS
-      ================================================= */}
+      {/* NOTEBOOKS */}
 
       <section className="container mb-5">
 
-
         <div className="encabezado-destacados">
 
-          <h2 className="titulo-productos-destacados">
+          <h2 className="titulo-productos-destacados titulo-secundario">
             Notebooks Destacados
           </h2>
 
@@ -362,7 +345,9 @@ function Home({ agregarAlCarrito }) {
 
 
     </main>
+
   );
 }
+
 
 export default Home;

@@ -632,20 +632,42 @@ h6 {
 .titulo-seccion {
   margin: 52px;
   color: var(--texto-principal);
-  font-family: "Orbitron", sans-serif;
+  font-family: "Rajdhani", sans-serif;
   font-size: 2.2rem;
-  letter-spacing: 3px;
+  font-weight: 700;
+  letter-spacing: 2px;
   text-align: center;
 }
+
+.titulo-pagina {
+  margin: 45px 0;
+  color: var(--texto-principal);
+  font-family: "Rajdhani", sans-serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.titulo-secundario {
+  color: var(--texto-principal);
+  font-family: "Rajdhani", sans-serif;
+  font-weight: 700;
+}
+
 .titulo-pagina-productos {
   margin: 45px 0;
+  color: var(--texto-principal);
   font-family: "Rajdhani", sans-serif;
-  font-size: 2.7rem;
-  font-weight: 600;
-  letter-spacing: 3px;
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
   line-height: 1;
+  text-align: center;
   text-transform: uppercase;
 }
+
 .titulo-pagina-productos::after {
   content: "";
   display: block;
@@ -654,11 +676,13 @@ h6 {
   margin: 12px auto 0;
   background: var(--cian);
 }
+
 .texto-pagina {
   color: var(--texto-secundario);
   font-size: 0.95rem;
   line-height: 1.7;
 }
+
 /* =========================================================
    PRODUCTOS DESTACADOS
 ========================================================= */
@@ -827,13 +851,46 @@ h6 {
   font-weight: 600;
   text-transform: uppercase;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.15s ease,
+    box-shadow 0.25s ease;
 }
+
 .boton-agregar-card:hover {
   border-color: var(--cian);
   color: var(--cian);
-  background:
-    rgba(0, 217, 232, 0.06);
+  background: rgba(0, 217, 232, 0.06);
+}
+
+.boton-agregar-card.agregado {
+  border-color: #35d98a;
+  background: rgba(53, 217, 138, 0.14);
+  color: #64eca6;
+  box-shadow: 0 0 14px rgba(53, 217, 138, 0.12);
+  transform: scale(0.98);
+}
+
+.boton-agregar-card.agregado i {
+  animation: aparecerCheck 0.25s ease;
+}
+
+@keyframes aparecerCheck {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+
+  70% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 /* =========================================================
    OFERTAS
@@ -1231,6 +1288,7 @@ h6 {
 .encabezado-contacto {
   margin-bottom: 44px;
 }
+
 .encabezado-contacto h1 {
   margin: 0 0 6px;
   color: var(--texto-principal);
@@ -1239,6 +1297,8 @@ h6 {
   font-weight: 700;
   letter-spacing: 1px;
 }
+
+ 
 .encabezado-contacto p {
   margin: 0;
   color: var(--cian);
@@ -1490,8 +1550,9 @@ h6 {
 }
 .tarjeta-blog h3 {
   color: var(--texto-principal);
-  font-family: "Orbitron", sans-serif;
+  font-family: "Rajdhani", sans-serif;
   font-size: 1.3rem;
+  font-weight: 700;
 }
 /* =========================================================
    FOOTER
@@ -1699,6 +1760,12 @@ footer a:hover {
     margin: 32px 10px;
     font-size: 1.5rem;
     letter-spacing: 2px;
+  }
+
+  .titulo-pagina {
+    margin: 32px 10px;
+    font-size: 1.8rem;
+    letter-spacing: 1.5px;
   }
   .titulo-pagina-productos {
     margin: 32px 0;

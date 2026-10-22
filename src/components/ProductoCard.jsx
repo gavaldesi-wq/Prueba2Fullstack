@@ -1,18 +1,39 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 
 function ProductoCard({ producto, agregarAlCarrito }) {
 
+  const [agregado, setAgregado] = useState(false);
+
+
   const precioFormateado =
     producto.precio.toLocaleString("es-CL");
+
 
   const precioAnteriorFormateado =
     producto.precioAnterior?.toLocaleString("es-CL");
 
 
+  function manejarAgregar() {
+
+    agregarAlCarrito(producto);
+
+    setAgregado(true);
+
+
+    setTimeout(() => {
+
+      setAgregado(false);
+
+    }, 1200);
+
+  }
+
+
   return (
 
-    <div className="col-12 col-sm-6 col-lg-3">
+    <div className="col-12 col-sm-6 col-lg-4">
 
       <div className="tarjeta-producto">
 
@@ -20,9 +41,11 @@ function ProductoCard({ producto, agregarAlCarrito }) {
         <div className="contenedor-imagen-producto">
 
           {producto.oferta && (
+
             <span className="etiqueta-oferta">
               Oferta
             </span>
+
           )}
 
 
@@ -39,6 +62,7 @@ function ProductoCard({ producto, agregarAlCarrito }) {
 
 
         <div className="contenido-producto">
+
 
           <h3 className="nombre-producto">
             {producto.nombre}
@@ -79,17 +103,32 @@ function ProductoCard({ producto, agregarAlCarrito }) {
 
           <button
             type="button"
-            className="boton-agregar-card"
-            onClick={() =>
-              agregarAlCarrito(producto)
+            className={
+              agregado
+                ? "boton-agregar-card agregado"
+                : "boton-agregar-card"
             }
+            onClick={manejarAgregar}
           >
 
-            <i className="bi bi-cart3"></i>
+            {agregado ? (
 
-            Agregar al carrito
+              <>
+                <i className="bi bi-check-lg"></i>
+                Agregado al carrito
+              </>
+
+            ) : (
+
+              <>
+                <i className="bi bi-cart3"></i>
+                Agregar al carrito
+              </>
+
+            )}
 
           </button>
+
 
         </div>
 
@@ -98,6 +137,7 @@ function ProductoCard({ producto, agregarAlCarrito }) {
     </div>
 
   );
+
 }
 
 
