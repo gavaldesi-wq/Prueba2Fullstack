@@ -1,81 +1,147 @@
 function Nosotros() {
-
   return (
-
-    <main className="pagina-nosotros">
-
+    <main className="nosotrosx">
       <div className="container">
 
+        <section className="nosotrosx-hero">
+          <span className="nosotrosx-etiqueta">
+            PC-SHOP
+          </span>
 
-        <section className="nosotros-presentacion">
-
-          <h1 className="titulo-nosotros">
+          <h1 className="nosotrosx-titulo">
             Sobre Nosotros
           </h1>
 
-
-          <div className="row justify-content-center">
-
-            <div className="col-lg-8 text-center">
-
-              <p className="texto-pagina fs-5">
-                PC-SHOP ES LA CUSPIDE DE LA INTELIGENCIA HUMANA HECHA PAGINA,
-                EN ESTA FAKIN TIENDA SE VENDE DE TODO PARA EL PC GEIMER QUE
-                PRONTAMENTE CORRERA EL GTA 6.
-              </p>
-
-              <p className="texto-pagina">
-                Desde tarjetas gráficas hasta refrigeración líquida,
-                seleccionamos cada producto pensando en el rendimiento
-                real que necesitas.
-              </p>
-
-            </div>
-
-          </div>
-
+          <p className="nosotrosx-texto">
+            En PC-SHOP reunimos componentes, periféricos y equipos pensados
+            para quienes buscan armar, mejorar o renovar su computador.
+            Nuestro objetivo es ofrecer una experiencia simple, clara y
+            enfocada en encontrar el hardware adecuado para cada necesidad.
+          </p>
         </section>
 
 
-        <section className="seccion-equipo">
+        <section className="nosotrosx-valores">
+          <div className="row g-4">
 
-          <h2 className="titulo-equipo">
-            Nuestro Equipo
-          </h2>
+            <div className="col-12 col-md-4">
+              <article className="nosotrosx-card">
+
+                <div className="nosotrosx-icono">
+                  <i className="bi bi-cpu"></i>
+                </div>
+
+                <h2 className="nosotrosx-card-titulo">
+                  Hardware seleccionado
+                </h2>
+
+                <p className="nosotrosx-card-texto">
+                  Organizamos nuestro catálogo por categorías para facilitar
+                  la búsqueda de componentes y equipos.
+                </p>
+
+              </article>
+            </div>
+
+
+            <div className="col-12 col-md-4">
+              <article className="nosotrosx-card">
+
+                <div className="nosotrosx-icono">
+                  <i className="bi bi-cart-check"></i>
+                </div>
+
+                <h2 className="nosotrosx-card-titulo">
+                  Compra simple
+                </h2>
+
+                <p className="nosotrosx-card-texto">
+                  Diseñamos una navegación directa, con carrito, registro y
+                  checkout para completar una compra de forma sencilla.
+                </p>
+
+              </article>
+            </div>
+
+
+            <div className="col-12 col-md-4">
+              <article className="nosotrosx-card">
+
+                <div className="nosotrosx-icono">
+                  <i className="bi bi-lightning-charge"></i>
+                </div>
+
+                <h2 className="nosotrosx-card-titulo">
+                  Enfoque en rendimiento
+                </h2>
+
+                <p className="nosotrosx-card-texto">
+                  Priorizamos productos orientados a gaming, productividad y
+                  actualización de computadores modernos.
+                </p>
+
+              </article>
+            </div>
+
+          </div>
+        </section>
+
+
+        <section className="nosotrosx-equipo">
+
+          <div className="nosotrosx-equipo-encabezado">
+
+            <span className="nosotrosx-subtitulo">
+              NUESTRO EQUIPO
+            </span>
+
+            <h2 className="nosotrosx-equipo-titulo">
+              Desarrollo del proyecto
+            </h2>
+
+          </div>
 
 
           <div className="row g-4 justify-content-center">
 
-            <div className="col-6 col-md-4 col-lg-3">
+            <div className="col-12 col-sm-6 col-lg-4">
 
-              <div className="tarjeta-equipo">
+              <article className="nosotrosx-miembro">
 
-                <p className="producto mb-0">
+                <div className="nosotrosx-miembro-icono">
+                  <i className="bi bi-code-slash"></i>
+                </div>
+
+                <p className="nosotrosx-miembro-nombre">
                   Gabriel Valdes
                 </p>
 
-                <p className="rol mb-0">
+                <p className="nosotrosx-miembro-rol">
                   Desarrollo FrontEnd
                 </p>
 
-              </div>
+              </article>
 
             </div>
 
 
-            <div className="col-6 col-md-4 col-lg-3">
+            <div className="col-12 col-sm-6 col-lg-4">
 
-              <div className="tarjeta-equipo">
+              <article className="nosotrosx-miembro">
 
-                <p className="producto mb-0">
+                <div className="nosotrosx-miembro-icono">
+                  <i className="bi bi-braces"></i>
+                </div>
+
+                <p className="nosotrosx-miembro-nombre">
                   Fabian Aguilar
                 </p>
 
-                <p className="rol mb-0">
+                <p className="nosotrosx-miembro-rol">
                   Desarrollo JavaScript
                 </p>
 
-              </div>
+              </article>
 
             </div>
 
@@ -83,14 +149,9 @@ function Nosotros() {
 
         </section>
 
-
       </div>
-
     </main>
-
   );
-
 }
-
 
 export default Nosotros;

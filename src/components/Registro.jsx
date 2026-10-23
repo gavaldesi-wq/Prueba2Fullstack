@@ -5,6 +5,8 @@ import {
   validarNombre,
   validarCorreo,
   validarTelefono,
+  validarRut,
+  validarPassword,
   validarTexto
 } from "../js/validaciones";
 
@@ -66,6 +68,11 @@ function Registro() {
       return;
     }
 
+    if (!validarRut(formulario.rut)) {
+      setError("El RUT ingresado no es válido.");
+      return;
+    }
+
     if (!validarCorreo(formulario.correo)) {
       setError("El correo ingresado no es válido.");
       return;
@@ -91,8 +98,8 @@ function Registro() {
       return;
     }
 
-    if (formulario.contrasena.length < 6) {
-      setError("La contraseña debe tener al menos 6 caracteres.");
+    if (!validarPassword(formulario.contrasena)) {
+      setError("La contraseña debe tener al menos 6 caracteres, una letra y un número.");
       return;
     }
 
@@ -101,16 +108,19 @@ function Registro() {
       return;
     }
 
-    const usuariosGuardados =
-      JSON.parse(localStorage.getItem("usuariosRegistrados")) || [];
-
-    const correoExistente = usuariosGuardados.find(
-      (usuario) =>
-        usuario.correo.toLowerCase() === formulario.correo.toLowerCase()
-    );
+    const correoExistente =
+      buscarUsuarioPorCorreo(formulario.correo);
 
     if (correoExistente) {
       setError("Ya existe una cuenta con ese correo.");
+      return;
+    }
+
+    const rutExistente =
+      buscarUsuarioPorRut(formulario.rut);
+
+    if (rutExistente) {
+      setError("Ya existe una cuenta con ese RUT.");
       return;
     }
 
@@ -123,7 +133,7 @@ function Registro() {
       region: formulario.region,
       ciudad: formulario.ciudad,
       direccion: formulario.direccion,
-       password: formulario.contrasena
+      password: formulario.contrasena
     };
 
     agregarUsuario(nuevoUsuario);

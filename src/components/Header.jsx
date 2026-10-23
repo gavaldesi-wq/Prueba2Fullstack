@@ -311,6 +311,18 @@ function Header({
                 </NavLink>
               </li>
 
+
+              {usuarioActivo?.rol === "admin" && (
+                <li className="nav-item">
+                  <NavLink
+                    to="/admin"
+                    className="nav-link enlace-nav"
+                  >
+                    Administración
+                  </NavLink>
+                </li>
+              )}
+
             </ul>
 
           </div>

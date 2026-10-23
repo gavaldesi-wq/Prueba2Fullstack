@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import productos from "../js/productosbd";
+import productosBase from "../js/productosbd";
+import { obtenerProductos } from "../js/productosCRUD";
 import ProductoCard from "./ProductoCard";
 
 
 function Productos({ agregarAlCarrito }) {
 
+  const productos = obtenerProductos(productosBase);
 
   const [searchParams, setSearchParams] = useSearchParams();
 

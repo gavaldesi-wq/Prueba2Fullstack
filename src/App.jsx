@@ -20,11 +20,23 @@ import Carrito from "./components/Carrito";
 import Checkout from "./components/Checkout";
 import CompraExitosa from "./components/CompraExitosa";
 import PagoFallido from "./components/PagoFallido";
+import AdminProductos from "./components/AdminProductos";
+import AdminUsuarios from "./components/AdminUsuarios";
+import RutaProtegida from "./components/RutaProtegida";
+
+import productosBase from "./js/productosbd";
+import { inicializarProductos } from "./js/productosCRUD";
+import { inicializarUsuarios } from "./js/usuariosBD";
 
 import "./App.css";
 
 
 function App() {
+
+  useEffect(() => {
+    inicializarProductos(productosBase);
+    inicializarUsuarios();
+  }, []);
 
 
   /* =========================
@@ -104,6 +116,8 @@ function App() {
       telefono: usuario.telefono,
 
       correo: usuario.correo,
+
+      rol: usuario.rol ?? "cliente",
 
       region: usuario.region,
 
@@ -508,6 +522,32 @@ function App() {
           path="/pago-fallido"
           element={
             <PagoFallido />
+          }
+        />
+
+
+        <Route
+          path="/admin"
+          element={
+            <RutaProtegida
+              usuario={usuarioActivo}
+              rolesPermitidos={["admin"]}
+            >
+              <AdminProductos />
+            </RutaProtegida>
+          }
+        />
+
+
+        <Route
+          path="/admin/usuarios"
+          element={
+            <RutaProtegida
+              usuario={usuarioActivo}
+              rolesPermitidos={["admin"]}
+            >
+              <AdminUsuarios />
+            </RutaProtegida>
           }
         />
 
