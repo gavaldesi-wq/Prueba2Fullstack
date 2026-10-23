@@ -1,11 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import productos from "../js/productosbd";
+import { obtenerProductos } from "../js/productosCRUD";
 import ProductoCard from "./ProductoCard";
 
 
 function Productos({ agregarAlCarrito }) {
+  // Guardamos los productos en un estado de React
+const [productos, setProductos] = useState(() => obtenerProductos());
+
+// Función que actualiza la lista desde localStorage
+function cargarProductos() {
+  setProductos(obtenerProductos());
+}
+
+// Actualizamos los productos cuando se modifica el almacenamiento
+useEffect(() => {
+  window.addEventListener("storage", cargarProductos);
+
+  return () => {
+    window.removeEventListener("storage", cargarProductos);
+  };
+}, []);
 
 
   const [searchParams, setSearchParams] = useSearchParams();
