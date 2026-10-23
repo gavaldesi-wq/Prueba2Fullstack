@@ -5,6 +5,8 @@ import {
   validarNombre,
   validarCorreo,
   validarTelefono,
+  validarRut,
+  validarPassword,
   validarTexto
 } from "../js/validaciones";
 
@@ -61,6 +63,11 @@ function Registro() {
       return;
     }
 
+    if (!validarRut(formulario.rut)) {
+    setError("El RUT ingresado no es válido.");
+    return;
+    }
+
     if (!validarNombre(formulario.nombre)) {
       setError("El nombre ingresado no es válido.");
       return;
@@ -91,28 +98,29 @@ function Registro() {
       return;
     }
 
-    if (formulario.contrasena.length < 6) {
-      setError("La contraseña debe tener al menos 6 caracteres.");
-      return;
-    }
+    if (!validarPassword(formulario.contrasena)) {
+  setError(
+    "La contraseña debe tener al menos 6 caracteres, una letra mayúscula, un número y un carácter especial."
+  );
+  return;
+}
 
     if (formulario.contrasena !== formulario.confirmarContrasena) {
       setError("Las contraseñas no coinciden.");
       return;
     }
 
-    const usuariosGuardados =
-      JSON.parse(localStorage.getItem("usuariosRegistrados")) || [];
+    // Comprobamos que el correo no esté registrado
+if (buscarUsuarioPorCorreo(formulario.correo)) {
+  setError("Ya existe una cuenta con ese correo.");
+  return;
+}
 
-    const correoExistente = usuariosGuardados.find(
-      (usuario) =>
-        usuario.correo.toLowerCase() === formulario.correo.toLowerCase()
-    );
-
-    if (correoExistente) {
-      setError("Ya existe una cuenta con ese correo.");
-      return;
-    }
+// Comprobamos que el RUT no esté registrado
+if (buscarUsuarioPorRut(formulario.rut)) {
+  setError("Ya existe una cuenta con ese RUT.");
+  return;
+}
 
     const nuevoUsuario = {
       id: Date.now(),
@@ -205,8 +213,7 @@ function Registro() {
               Completa tus datos para registrarte.
             </p>
 
-            <form onSubmit={manejarEnvio}>
-
+            <form onSubmit={manejarEnvio} noValidate>
               <div className="registro-grid">
 
                 <div className="campo-registro">

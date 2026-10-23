@@ -22,11 +22,8 @@ export function guardarUsuarios(usuarios) {
   );
 }
 
-
 export function buscarUsuarioPorCorreo(correo) {
-
-  const usuarios =
-    obtenerUsuarios();
+  const usuarios = obtenerUsuarios();
 
   return usuarios.find(
     (usuario) =>
@@ -35,21 +32,27 @@ export function buscarUsuarioPorCorreo(correo) {
   );
 }
 
-
 export function buscarUsuarioPorRut(rut) {
 
-  const usuarios =
-    obtenerUsuarios();
+  const usuarios = obtenerUsuarios();
 
-  const rutLimpio = rut
-    .replace(/\./g, "")
-    .replace(/\s/g, "");
+  // Normalizamos el RUT para comparar sin puntos ni espacios
+  const limpiarRut = (valor) => {
+    return valor
+      .replace(/[.\s]/g, "")
+      .toUpperCase();
+  };
 
+  const rutLimpio = limpiarRut(rut);
+
+  // Buscamos si el RUT ya está registrado
   return usuarios.find(
-    (usuario) =>
-      usuario.rut === rutLimpio
+    (usuario) => limpiarRut(usuario.rut) === rutLimpio
   );
 }
+
+
+
 
 
 export function agregarUsuario(usuario) {

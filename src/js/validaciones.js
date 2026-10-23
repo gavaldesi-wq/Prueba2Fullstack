@@ -28,26 +28,56 @@ export function validarTelefono(telefono) {
 }
 
 
+
 export function validarRut(rut) {
 
-  const rutLimpio = rut
-    .replace(/\./g, "")
-    .replace(/\s/g, "");
+  // Quitamos puntos y espacios, y dejamos la K en mayúscula
+  const rutLimpio = rut.replace(/[.\s]/g, "").toUpperCase();
 
-  const regex =
-    /^\d{7,8}-[\dkK]$/;
+  // Revisamos que tenga el formato de un RUT chileno
+  const regex = /^(\d{7,8})-([\dK])$/;
+  const resultado = rutLimpio.match(regex);
 
-  return regex.test(rutLimpio);
+  if (!resultado) {
+    return false;
+  }
+
+  const numero = resultado[1];
+  const digitoVerificador = resultado[2];
+
+  let suma = 0;
+  let multiplicador = 2;
+
+  // Calculamos el dígito verificador usando módulo 11
+  for (let i = numero.length - 1; i >= 0; i--) {
+    suma += Number(numero[i]) * multiplicador;
+
+    multiplicador = multiplicador === 7
+      ? 2
+      : multiplicador + 1;
+  }
+
+  const resto = 11 - (suma % 11);
+
+  const digitoCalculado =
+    resto === 11 ? "0" :
+    resto === 10 ? "K" :
+    String(resto);
+
+  return digitoVerificador === digitoCalculado;
 }
+
+
 
 
 export function validarPassword(password) {
 
-  const regex =
-    /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
+  // Exigimos una mayúscula, un número y un carácter especial
+  const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^\p{L}\p{N}\s]).{6,}$/u;
 
   return regex.test(password);
 }
+
 
 
 export function validarTexto(texto, minimo = 3) {
