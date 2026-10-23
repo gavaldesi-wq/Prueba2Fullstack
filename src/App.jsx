@@ -20,6 +20,8 @@ import Carrito from "./components/Carrito";
 import Checkout from "./components/Checkout";
 import CompraExitosa from "./components/CompraExitosa";
 import PagoFallido from "./components/PagoFallido";
+import AdminProductos from "./components/AdminProductos";
+import AdminUsuarios from "./components/AdminUsuarios";
 
 import "./App.css";
 
@@ -104,6 +106,8 @@ function App() {
       telefono: usuario.telefono,
 
       correo: usuario.correo,
+
+      rol: usuario.rol ?? "cliente",
 
       region: usuario.region,
 
@@ -510,7 +514,12 @@ function App() {
             <PagoFallido />
           }
         />
-
+        
+      <Route
+      path="/admin"
+      element={<AdminProductos />}
+      />
+      <Route path="/admin/usuarios" element={<AdminUsuarios />} />
 
       </Routes>
 
