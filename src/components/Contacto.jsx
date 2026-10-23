@@ -127,7 +127,7 @@ function Contacto() {
 
             <div className="encabezado-contacto">
 
-              <h1>
+              <h1 className="titulo-pagina">
                 Contacto
               </h1>
 

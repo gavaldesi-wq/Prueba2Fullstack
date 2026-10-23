@@ -2,7 +2,7 @@ function Blog() {
     return (
         <>
         <div className="container mt-4">
-  <h1 className="titulo-seccion">Datos curiosos</h1>
+  <h1 className="titulo-pagina">Datos curiosos</h1>
   <div className="d-flex flex-column gap-4 mb-5">
     <div className="tarjeta-blog">
       <div className="row g-0">

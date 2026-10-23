@@ -1,121 +1,222 @@
 import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import Checkout from "./components/Checkout";
-import CompraExitosa from "./components/CompraExitosa";
-import PagoFallido from "./components/PagoFallido";
+
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Home from "./components/Home";
+
+import Home from "./components/home";
 import Productos from "./components/Productos";
+
+import DetalleProducto from "./components/DetalleProducto";
+
 import Nosotros from "./components/Nosotros";
 import Blog from "./components/Blog";
 import Contacto from "./components/Contacto";
+
 import Login from "./components/Login";
 import Registro from "./components/Registro";
+
 import Carrito from "./components/Carrito";
-import DetalleProducto from "./components/DetalleProducto";
+import Checkout from "./components/Checkout";
+import CompraExitosa from "./components/CompraExitosa";
+import PagoFallido from "./components/PagoFallido";
 
 import "./App.css";
 
 
 function App() {
 
+
   /* =========================
      CARRITO
   ========================= */
 
   const [carrito, setCarrito] = useState(() => {
-    const carritoGuardado = localStorage.getItem("carrito");
+
+    const carritoGuardado =
+      localStorage.getItem("carrito");
+
 
     if (carritoGuardado) {
-      return JSON.parse(carritoGuardado);
+
+      return JSON.parse(
+        carritoGuardado
+      );
+
     }
 
+
     return [];
+
   });
 
 
+
   useEffect(() => {
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+
+    localStorage.setItem(
+      "carrito",
+      JSON.stringify(carrito)
+    );
+
   }, [carrito]);
+
 
 
   /* =========================
      USUARIO
   ========================= */
 
-  const [usuarioActivo, setUsuarioActivo] = useState(() => {
-    const usuarioGuardado = localStorage.getItem("usuarioActivo");
+  const [usuarioActivo, setUsuarioActivo] =
+    useState(() => {
 
-    if (usuarioGuardado) {
-      return JSON.parse(usuarioGuardado);
-    }
+      const usuarioGuardado =
+        localStorage.getItem(
+          "usuarioActivo"
+        );
 
-    return null;
-  });
+
+      if (usuarioGuardado) {
+
+        return JSON.parse(
+          usuarioGuardado
+        );
+
+      }
+
+
+      return null;
+
+    });
+
 
 
   function iniciarSesion(usuario) {
+
     const sesion = {
+
       id: usuario.id,
+
       nombre: usuario.nombre,
+
       rut: usuario.rut,
+
       telefono: usuario.telefono,
+
       correo: usuario.correo,
+
       region: usuario.region,
+
       ciudad: usuario.ciudad,
+
       direccion: usuario.direccion
+
     };
 
+
     setUsuarioActivo(sesion);
-    localStorage.setItem("usuarioActivo", JSON.stringify(sesion));
+
+
+    localStorage.setItem(
+      "usuarioActivo",
+      JSON.stringify(sesion)
+    );
+
   }
+
 
 
   function cerrarSesion() {
+
     setUsuarioActivo(null);
-    localStorage.removeItem("usuarioActivo");
+
+    localStorage.removeItem(
+      "usuarioActivo"
+    );
+
   }
+
 
 
   /* =========================
      AGREGAR AL CARRITO
   ========================= */
 
-  function agregarAlCarrito(producto, cantidad = 1) {
-    const cantidadAgregar = Number(cantidad) || 1;
+  function agregarAlCarrito(
+    producto,
+    cantidad = 1
+  ) {
+
+    const cantidadAgregar =
+      Number(cantidad) || 1;
+
 
     setCarrito((carritoActual) => {
-      const productoExistente = carritoActual.find((item) => item.id === producto.id);
-      if (productoExistente) {
-        const carritoActualizado = carritoActual.map((item) => {
-          if (item.id === producto.id) {
-            return {
-              ...item,
-              cantidad: (Number(item.cantidad) || 0) + cantidadAgregar
-            };
-          }
 
-          return item;
-        });
+      const productoExistente =
+        carritoActual.find(
+          (item) =>
+            item.id === producto.id
+        );
+
+
+      if (productoExistente) {
+
+        const carritoActualizado =
+          carritoActual.map((item) => {
+
+            if (
+              item.id === producto.id
+            ) {
+
+              return {
+
+                ...item,
+
+                cantidad:
+                  (Number(item.cantidad) || 0)
+                  + cantidadAgregar
+
+              };
+
+            }
+
+
+            return item;
+
+          });
+
 
         return carritoActualizado;
+
       }
 
 
+
       const nuevoProducto = {
+
         ...producto,
+
         cantidad: cantidadAgregar
+
       };
 
+
       const nuevoCarrito = [
+
         ...carritoActual,
+
         nuevoProducto
+
       ];
 
+
       return nuevoCarrito;
+
     });
+
   }
+
 
 
   /* =========================
@@ -123,10 +224,20 @@ function App() {
   ========================= */
 
   function eliminarDelCarrito(id) {
-    const carritoActualizado = carrito.filter((producto) => producto.id !== id);
 
-    setCarrito(carritoActualizado);
+    const carritoActualizado =
+      carrito.filter(
+        (producto) =>
+          producto.id !== id
+      );
+
+
+    setCarrito(
+      carritoActualizado
+    );
+
   }
+
 
 
   /* =========================
@@ -135,24 +246,38 @@ function App() {
 
   function aumentarCantidad(id) {
 
-    const carritoActualizado = carrito.map((producto) => {
+    const carritoActualizado =
+      carrito.map((producto) => {
 
-      if (producto.id === id) {
-        return {
-          ...producto,
-          cantidad: (Number(producto.cantidad) || 0) + 1
-        };
-      }
 
-      return producto;
-    });
+        if (
+          producto.id === id
+        ) {
 
-    setCarrito(carritoActualizado);
+          return {
+
+            ...producto,
+
+            cantidad:
+              (Number(producto.cantidad) || 0)
+              + 1
+
+          };
+
+        }
+
+
+        return producto;
+
+      });
+
+
+    setCarrito(
+      carritoActualizado
+    );
+
   }
 
-  function vaciarCarrito() {
-  setCarrito([]);
-}
 
 
   /* =========================
@@ -161,30 +286,68 @@ function App() {
 
   function disminuirCantidad(id) {
 
-    const carritoActualizado = carrito.map((producto) => {
+    const carritoActualizado =
+      carrito.map((producto) => {
 
-      if (producto.id === id && Number(producto.cantidad) > 1) {
-        return {
-          ...producto,
-          cantidad: Number(producto.cantidad) - 1
-        };
-      }
 
-      return producto;
-    });
+        if (
+          producto.id === id &&
+          Number(producto.cantidad) > 1
+        ) {
 
-    setCarrito(carritoActualizado);
+          return {
+
+            ...producto,
+
+            cantidad:
+              Number(producto.cantidad)
+              - 1
+
+          };
+
+        }
+
+
+        return producto;
+
+      });
+
+
+    setCarrito(
+      carritoActualizado
+    );
+
   }
+
+
+
+  /* =========================
+     VACIAR CARRITO
+  ========================= */
+
+  function vaciarCarrito() {
+
+    setCarrito([]);
+
+  }
+
 
 
   /* =========================
      TOTAL CARRITO
   ========================= */
 
-  const cantidadCarrito = carrito.reduce(
-    (total, producto) => total + (Number(producto.cantidad) || 0),
-    0
-  );
+  const cantidadCarrito =
+    carrito.reduce(
+
+      (total, producto) =>
+        total +
+        (Number(producto.cantidad) || 0),
+
+      0
+
+    );
+
 
 
   /* =========================
@@ -192,7 +355,9 @@ function App() {
   ========================= */
 
   return (
+
     <>
+
       <Header
         cantidadCarrito={cantidadCarrito}
         usuarioActivo={usuarioActivo}
@@ -200,58 +365,136 @@ function App() {
         cerrarSesion={cerrarSesion}
       />
 
+
       <Routes>
+
 
         <Route
           path="/"
-          element={<Home agregarAlCarrito={agregarAlCarrito} />}
+          element={
+            <Home
+              agregarAlCarrito={
+                agregarAlCarrito
+              }
+            />
+          }
         />
+
+
+
 
         <Route
           path="/productos"
-          element={<Productos agregarAlCarrito={agregarAlCarrito} />}
+          element={
+            <Productos
+              agregarAlCarrito={
+                agregarAlCarrito
+              }
+            />
+          }
         />
+
 
         <Route
           path="/producto/:id"
-          element={<DetalleProducto agregarAlCarrito={agregarAlCarrito} />}
+          element={
+            <DetalleProducto
+              agregarAlCarrito={
+                agregarAlCarrito
+              }
+            />
+          }
         />
 
-        <Route path="/nosotros" element={<Nosotros />} />
 
-        <Route path="/blog" element={<Blog />} />
 
-        <Route path="/contacto" element={<Contacto />} />
+
+
+        <Route
+          path="/nosotros"
+          element={
+            <Nosotros />
+          }
+        />
+
+
+
+        <Route
+          path="/blog"
+          element={
+            <Blog />
+          }
+        />
+
+
+        <Route
+          path="/contacto"
+          element={
+            <Contacto />
+          }
+        />
+
 
         <Route
           path="/login"
-          element={<Login iniciarSesion={iniciarSesion} />}
+          element={
+            <Login
+              iniciarSesion={
+                iniciarSesion
+              }
+            />
+          }
         />
 
-        <Route path="/registro" element={<Registro />} />
+
+        <Route
+          path="/registro"
+          element={
+            <Registro />
+          }
+        />
+
+
 
         <Route
           path="/carrito"
           element={
+
             <Carrito
               carrito={carrito}
-              eliminarDelCarrito={eliminarDelCarrito}
-              aumentarCantidad={aumentarCantidad}
-              disminuirCantidad={disminuirCantidad}
+              eliminarDelCarrito={
+                eliminarDelCarrito
+              }
+              aumentarCantidad={
+                aumentarCantidad
+              }
+              disminuirCantidad={
+                disminuirCantidad
+              }
             />
+
           }
         />
 
-                <Route
+
+        <Route
           path="/checkout"
           element={
+
             <Checkout
               carrito={carrito}
-              usuarioActivo={usuarioActivo}
-              vaciarCarrito={vaciarCarrito}
+              usuarioActivo={
+                usuarioActivo
+              }
+              vaciarCarrito={
+                vaciarCarrito
+              }
             />
+
           }
         />
+
+
 
         <Route
           path="/compra-exitosa"
@@ -260,6 +503,7 @@ function App() {
           }
         />
 
+
         <Route
           path="/pago-fallido"
           element={
@@ -267,11 +511,16 @@ function App() {
           }
         />
 
+
       </Routes>
 
+
       <Footer />
+
     </>
+
   );
+
 }
 
 
