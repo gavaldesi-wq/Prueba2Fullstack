@@ -56,18 +56,14 @@ export function buscarUsuarioPorRut(rut) {
 
 
 export function agregarUsuario(usuario) {
+  const usuarios = obtenerUsuarios();
 
-  const usuarios =
-    obtenerUsuarios();
+  const nuevoUsuario = {
+    ...usuario,
+    rol: "cliente"
+  };
 
-  const usuariosActualizados = [
-    ...usuarios,
-    usuario
-  ];
-
-  guardarUsuarios(
-    usuariosActualizados
-  );
+  guardarUsuarios([...usuarios, nuevoUsuario]);
 }
 
 
