@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import productos from "../js/productosbd";
+import productosBase from "../js/productosbd";
+import { obtenerProductos } from "../js/productosCRUD";
 import ProductoCard from "./ProductoCard";
 
 import banner1 from "../assets/banner1.png";
@@ -31,6 +32,8 @@ const banners = [
 
 
 function Home({ agregarAlCarrito }) {
+
+  const productos = obtenerProductos(productosBase);
 
   const productosDestacados = productos
     .filter((producto) => producto.destacado)

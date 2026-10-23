@@ -1,264 +1,198 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
+
 import {
   obtenerUsuarios,
-  guardarUsuarios
+  actualizarUsuario,
+  eliminarUsuario
 } from "../js/usuariosBD";
 
-function AdminUsuarios() {
-  const [usuarios, setUsuarios] = useState(() => obtenerUsuarios());
-  const [mensaje, setMensaje] = useState("");
-  // Guardamos qué usuario estamos editando.
-const [indiceEditando, setIndiceEditando] = useState(null);
+import {
+  validarNombre,
+  validarCorreo,
+  validarTelefono,
+  validarRut
+} from "../js/validaciones";
 
-const [formulario, setFormulario] = useState({
+const formularioVacio = {
   nombre: "",
   rut: "",
   correo: "",
   telefono: ""
-});
+};
 
-const [errores, setErrores] = useState({});
+function AdminUsuarios() {
+  const [usuarios, setUsuarios] = useState(() => obtenerUsuarios());
+  const [idEditando, setIdEditando] = useState(null);
+  const [formulario, setFormulario] = useState(formularioVacio);
+  const [errores, setErrores] = useState({});
+  const [mensaje, setMensaje] = useState("");
 
-  function eliminarUsuario(usuario, indice) {
-    const confirmar = window.confirm(
-      `¿Eliminar al usuario "${usuario.nombre}"?`
-    );
+  function editarUsuario(usuario) {
+    setIdEditando(usuario.id);
+    setFormulario({
+      nombre: usuario.nombre ?? "",
+      rut: usuario.rut ?? "",
+      correo: usuario.correo ?? "",
+      telefono: usuario.telefono ?? ""
+    });
+    setErrores({});
+    setMensaje("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
+  function manejarCambio(evento) {
+    const { name, value } = evento.target;
+    setFormulario((anterior) => ({ ...anterior, [name]: value }));
+  }
+
+  function cancelarEdicion() {
+    setIdEditando(null);
+    setFormulario(formularioVacio);
+    setErrores({});
+  }
+
+  function guardarEdicion(evento) {
+    evento.preventDefault();
+
+    const nuevosErrores = {};
+    const nombre = formulario.nombre.trim();
+    const rut = formulario.rut.trim();
+    const correo = formulario.correo.trim().toLowerCase();
+    const telefono = formulario.telefono.trim();
+
+    if (!validarNombre(nombre)) nuevosErrores.nombre = "Ingresa un nombre válido.";
+    if (!validarRut(rut)) nuevosErrores.rut = "Ingresa un RUT válido.";
+    if (!validarCorreo(correo)) nuevosErrores.correo = "Ingresa un correo válido.";
+    if (telefono && !validarTelefono(telefono)) nuevosErrores.telefono = "Ingresa un teléfono chileno válido.";
+
+    const normalizarRut = (valor) => String(valor ?? "").replace(/[.\s]/g, "").toUpperCase();
+
+    if (usuarios.some((usuario) => String(usuario.id) !== String(idEditando) && String(usuario.correo ?? "").toLowerCase() === correo)) {
+      nuevosErrores.correo = "Este correo ya está registrado.";
+    }
+
+    if (usuarios.some((usuario) => String(usuario.id) !== String(idEditando) && normalizarRut(usuario.rut) === normalizarRut(rut))) {
+      nuevosErrores.rut = "Este RUT ya está registrado.";
+    }
+
+    if (Object.keys(nuevosErrores).length > 0) {
+      setErrores(nuevosErrores);
+      setMensaje("Corrige los campos indicados.");
+      return;
+    }
+
+    actualizarUsuario(idEditando, { nombre, rut, correo, telefono });
+    setUsuarios(obtenerUsuarios());
+    cancelarEdicion();
+    setMensaje("Usuario actualizado correctamente.");
+  }
+
+  function manejarEliminacion(usuario) {
+    if (usuario.rol === "admin") {
+      setMensaje("La cuenta administradora no se puede eliminar.");
+      return;
+    }
+
+    const confirmar = window.confirm(`¿Eliminar al usuario "${usuario.nombre}"?`);
     if (!confirmar) return;
 
-    // Usamos el índice porque algunos usuarios
-    // podrían no tener un ID asignado.
-    const actualizados = usuarios.filter(
-      (_, i) => i !== indice
-    );
-
-    guardarUsuarios(actualizados);
-    setUsuarios(actualizados);
+    eliminarUsuario(usuario.id);
+    setUsuarios(obtenerUsuarios());
     setMensaje("Usuario eliminado correctamente.");
   }
-  
-function editarUsuario(usuario, indice) {
-  // Guardamos la posición del usuario seleccionado.
-  setIndiceEditando(indice);
-
-  // Cargamos sus datos en el formulario.
-  setFormulario({
-    nombre: usuario.nombre ?? "",
-    rut: usuario.rut ?? "",
-    correo: usuario.correo ?? "",
-    telefono: usuario.telefono ?? ""
-  });
-
-  setErrores({});
-  setMensaje("");
-
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function manejarCambio(e) {
-  const { name, value } = e.target;
-
-  setFormulario(prev => ({
-    ...prev,
-    [name]: value
-  }));
-}
-
-function guardarEdicion(e) {
-  e.preventDefault();
-
-  if (indiceEditando === null) return;
-
-  const nuevosErrores = {};
-
-  const nombre = formulario.nombre.trim();
-  const rut = formulario.rut.trim();
-  const correo = formulario.correo.trim().toLowerCase();
-  const telefono = formulario.telefono.trim();
-
-  if (nombre.length < 3) {
-    nuevosErrores.nombre = "El nombre debe tener al menos 3 caracteres.";
-  }
-
-  if (!rut) {
-    nuevosErrores.rut = "El RUT es obligatorio.";
-  }
-
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
-    nuevosErrores.correo = "Ingresa un correo válido.";
-  }
-
-  const correoDuplicado = usuarios.some(
-    (usuario, indice) =>
-      indice !== indiceEditando &&
-      String(usuario.correo ?? "").toLowerCase() === correo
-  );
-
-  if (correoDuplicado) {
-    nuevosErrores.correo = "Este correo ya está registrado.";
-  }
-
-  const normalizarRut = valor =>
-    String(valor ?? "").replace(/[.\s-]/g, "").toUpperCase();
-
-  const rutDuplicado = usuarios.some(
-    (usuario, indice) =>
-      indice !== indiceEditando &&
-      normalizarRut(usuario.rut) === normalizarRut(rut)
-  );
-
-  if (rutDuplicado) {
-    nuevosErrores.rut = "Este RUT ya está registrado.";
-  }
-
-  if (Object.keys(nuevosErrores).length > 0) {
-    setErrores(nuevosErrores);
-    setMensaje("Corrige los campos indicados.");
-    return;
-  }
-
-  // Conservamos los demás datos del usuario,
-  // incluyendo su contraseña y otros atributos.
-  const actualizados = usuarios.map((usuario, indice) =>
-    indice === indiceEditando
-      ? { ...usuario, nombre, rut, correo, telefono }
-      : usuario
-  );
-
-  guardarUsuarios(actualizados);
-  setUsuarios(actualizados);
-
-  cancelarEdicion();
-  setMensaje("Usuario actualizado correctamente.");
-}
-
-function cancelarEdicion() {
-  setIndiceEditando(null);
-  setFormulario({
-    nombre: "",
-    rut: "",
-    correo: "",
-    telefono: ""
-  });
-  setErrores({});
-}
-
 
   return (
-    <main className="container py-5">
-      <h1>Administración de usuarios</h1>
-      <p>Usuarios registrados en PC-SHOP</p>
+    <main className="adminx">
+      <div className="container">
+        <div className="adminx-header">
+          <div>
+            <span className="adminx-kicker">PC-SHOP ADMIN</span>
+            <h1>Administración de usuarios</h1>
+            <p>Edita datos básicos y gestiona las cuentas registradas.</p>
+          </div>
 
-      <div className="d-flex gap-2 mb-4">
-        <Link to="/admin" className="btn btn-outline-light">
-          Volver a productos
-        </Link>
-        <Link to="/registro" className="btn btn-info">
-          Registrar usuario
-        </Link>
-      </div>
-
-      {mensaje && <p role="status">{mensaje}</p>}
-      
-{indiceEditando !== null && (
-  <section className="mb-4">
-    <h2>Editar usuario</h2>
-
-    <form onSubmit={guardarEdicion} noValidate>
-      {[
-        ["nombre", "Nombre"],
-        ["rut", "RUT"],
-        ["correo", "Correo"],
-        ["telefono", "Teléfono"]
-      ].map(([campo, etiqueta]) => (
-        <div className="mb-3" key={campo}>
-          <label htmlFor={campo} className="form-label">
-            {etiqueta}
-          </label>
-
-          <input
-            id={campo}
-            name={campo}
-            type={campo === "correo" ? "email" : "text"}
-            className="form-control"
-            value={formulario[campo]}
-            onChange={manejarCambio}
-          />
-
-          {errores[campo] && (
-            <small className="text-danger">
-              {errores[campo]}
-            </small>
-          )}
+          <div className="adminx-header-links">
+            <Link to="/admin" className="adminx-link-principal">Productos</Link>
+            <Link to="/" className="adminx-link-secundario">Ver tienda</Link>
+          </div>
         </div>
-      ))}
 
-      <div className="d-flex gap-2">
-        <button type="submit" className="btn btn-info">
-          Guardar cambios
-        </button>
+        {idEditando !== null && (
+          <section className="adminx-panel">
+            <div className="adminx-panel-titulo">
+              <h2>Editar usuario</h2>
+            </div>
 
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={cancelarEdicion}
-        >
-          Cancelar
-        </button>
-      </div>
-    </form>
-  </section>
-)}
+            <form onSubmit={guardarEdicion} className="row g-3" noValidate>
+              {[
+                ["nombre", "Nombre", "text"],
+                ["rut", "RUT", "text"],
+                ["correo", "Correo", "email"],
+                ["telefono", "Teléfono", "text"]
+              ].map(([campo, etiqueta, tipo]) => (
+                <div className="col-12 col-md-6" key={campo}>
+                  <label className="adminx-label" htmlFor={`usuario-${campo}`}>{etiqueta}</label>
+                  <input
+                    id={`usuario-${campo}`}
+                    name={campo}
+                    type={tipo}
+                    className="adminx-input"
+                    value={formulario[campo]}
+                    onChange={manejarCambio}
+                  />
+                  {errores[campo] && <small className="adminx-error">{errores[campo]}</small>}
+                </div>
+              ))}
 
+              <div className="col-12 adminx-actions">
+                <button type="submit" className="adminx-btn-primary">Guardar cambios</button>
+                <button type="button" className="adminx-btn-secondary" onClick={cancelarEdicion}>Cancelar</button>
+              </div>
+            </form>
+          </section>
+        )}
 
-      <h2>Usuarios registrados: {usuarios.length}</h2>
+        {mensaje && <p className="adminx-mensaje" role="status">{mensaje}</p>}
 
-      <div className="table-responsive">
-        <table className="table table-dark table-striped">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>RUT</th>
-              <th>Correo</th>
-              <th>Teléfono</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
+        <section className="adminx-panel">
+          <div className="adminx-panel-titulo">
+            <h2>Usuarios registrados</h2>
+            <p>{usuarios.length} cuentas guardadas.</p>
+          </div>
 
-          <tbody>
-            {usuarios.map((usuario, indice) => (
-              <tr key={usuario.id ?? indice}>
-                <td>{usuario.nombre}</td>
-                <td>{usuario.rut}</td>
-                <td>{usuario.correo}</td>
-                <td>{usuario.telefono || "No registrado"}</td>
-                
-<td>
-  <div className="d-flex gap-2">
-    <button
-      type="button"
-      className="btn btn-warning btn-sm"
-      onClick={() => editarUsuario(usuario, indice)}
-    >
-      Editar
-    </button>
-
-    <button
-      type="button"
-      className="btn btn-danger btn-sm"
-      onClick={() => eliminarUsuario(usuario, indice)}
-    >
-      Eliminar
-    </button>
-  </div>
-</td>
-
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          <div className="table-responsive adminx-tabla-wrap">
+            <table className="table adminx-tabla align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>RUT</th>
+                  <th>Correo</th>
+                  <th>Rol</th>
+                  <th>Teléfono</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {usuarios.map((usuario) => (
+                  <tr key={usuario.id}>
+                    <td>{usuario.nombre}</td>
+                    <td>{usuario.rut}</td>
+                    <td>{usuario.correo}</td>
+                    <td><span className={`adminx-rol ${usuario.rol}`}>{usuario.rol}</span></td>
+                    <td>{usuario.telefono || "No registrado"}</td>
+                    <td>
+                      <div className="adminx-table-actions">
+                        <button type="button" className="adminx-btn-editar" onClick={() => editarUsuario(usuario)}>Editar</button>
+                        <button type="button" className="adminx-btn-eliminar" disabled={usuario.rol === "admin"} onClick={() => manejarEliminacion(usuario)}>Eliminar</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
     </main>
   );

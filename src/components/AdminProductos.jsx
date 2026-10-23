@@ -1,8 +1,10 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import productosBase from "../js/productosbd";
+
 import {
+  inicializarProductos,
   obtenerProductos,
   agregarProducto,
   actualizarProducto,
@@ -11,329 +13,274 @@ import {
 
 import { validarProducto } from "../js/validacionesProductos";
 
-function AdminProductos() {
-  // Cargamos los productos que ya tenemos guardados.
-const [productos, setProductos] = useState(() => obtenerProductos());
-// Guardamos el ID del producto que estamos editando.
-// Si es null, el formulario funciona como registro.
-const [idEditando, setIdEditando] = useState(null);
+const formularioVacio = {
+  nombre: "",
+  categoria: "",
+  marca: "",
+  modelo: "",
+  precio: "",
+  stock: "",
+  imagen: "",
+  descripcionCorta: "",
+  destacado: false
+};
 
-  // Guardamos temporalmente los datos del formulario.
-  const [formulario, setFormulario] = useState({
-    nombre: "",
-    categoria: "",
-    marca: "",
-    modelo: "",
-    precio: "",
-    stock: "",
-    imagen: "",
-    descripcion: ""
+function AdminProductos() {
+  const [productos, setProductos] = useState(() => {
+    inicializarProductos(productosBase);
+    return obtenerProductos();
   });
 
+  const [idEditando, setIdEditando] = useState(null);
+  const [formulario, setFormulario] = useState(formularioVacio);
   const [mensaje, setMensaje] = useState("");
   const [errores, setErrores] = useState({});
 
-  // Actualizamos el campo que el usuario esté escribiendo.
-  function manejarCambio(e) {
-    const { name, value } = e.target;
+  function manejarCambio(evento) {
+    const { name, value, type, checked } = evento.target;
 
-    setFormulario(prev => ({
-      ...prev,
-      [name]: value
+    setFormulario((anterior) => ({
+      ...anterior,
+      [name]: type === "checkbox" ? checked : value
     }));
   }
 
-  // Registramos un producto nuevo.
-  
-function manejarEdicion(producto) {
-  // Identificamos el producto que queremos modificar.
-  setIdEditando(producto.id);
-
-  // Cargamos sus datos en el formulario.
-  setFormulario({
-    nombre: producto.nombre ?? "",
-    categoria: producto.categoria ?? "",
-    marca: producto.marca ?? "",
-    modelo: producto.modelo ?? "",
-    precio: String(producto.precio ?? ""),
-    stock: String(producto.stock ?? ""),
-    imagen: producto.imagen ?? "",
-    descripcion: producto.descripcion ?? ""
-  });
-
-  // Limpiamos los mensajes anteriores.
-  setErrores({});
-  setMensaje("");
-
-  // Volvemos al inicio para ver el formulario.
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-  
-
-function manejarRegistro(e) {
-  e.preventDefault();
-
-  // Si estamos editando, incluimos el ID para que
-  // la validación no detecte el mismo producto como duplicado.
-  const datosParaValidar = {
-    ...formulario,
-    id: idEditando
-  };
-
-  const erroresEncontrados = validarProducto(
-    datosParaValidar,
-    productos
-  );
-
-  setErrores(erroresEncontrados);
-
-  if (Object.keys(erroresEncontrados).length > 0) {
-    setMensaje("Corrige los campos indicados.");
-    return;
+  function limpiarFormulario() {
+    setFormulario(formularioVacio);
+    setIdEditando(null);
+    setErrores({});
   }
 
-  const datosProducto = {
-    ...formulario,
-    nombre: formulario.nombre.trim(),
-    categoria: formulario.categoria.trim(),
-    marca: formulario.marca.trim(),
-    modelo: formulario.modelo.trim(),
-    precio: Number(formulario.precio),
-    stock: Number(formulario.stock)
-  };
+  function manejarEdicion(producto) {
+    setIdEditando(producto.id);
 
-  if (idEditando !== null) {
-    // UPDATE: modificamos el producto existente.
-    actualizarProducto(idEditando, datosProducto);
-    setMensaje("Producto actualizado correctamente.");
-  } else {
-    // CREATE: registramos un producto nuevo.
-    agregarProducto({
-      ...datosProducto,
-      destacado: false,
-      caracteristicas: []
+    setFormulario({
+      nombre: producto.nombre ?? "",
+      categoria: producto.categoria ?? "",
+      marca: producto.marca ?? "",
+      modelo: producto.modelo ?? "",
+      precio: String(producto.precio ?? ""),
+      stock: String(producto.stock ?? ""),
+      imagen: producto.imagen ?? "",
+      descripcionCorta: producto.descripcionCorta ?? "",
+      destacado: Boolean(producto.destacado)
     });
-    setMensaje("Producto registrado correctamente.");
+
+    setErrores({});
+    setMensaje("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  // Actualizamos la tabla.
-  setProductos(obtenerProductos());
+  function manejarRegistro(evento) {
+    evento.preventDefault();
 
-  // Limpiamos el formulario y salimos del modo edición.
-  setIdEditando(null);
-  setErrores({});
+    const datosParaValidar = {
+      ...formulario,
+      id: idEditando
+    };
 
-  setFormulario({
-    nombre: "",
-    categoria: "",
-    marca: "",
-    modelo: "",
-    precio: "",
-    stock: "",
-    imagen: "",
-    descripcion: ""
-  });
-}
+    const erroresEncontrados = validarProducto(datosParaValidar, productos);
+    setErrores(erroresEncontrados);
 
+    if (Object.keys(erroresEncontrados).length > 0) {
+      setMensaje("Corrige los campos indicados antes de continuar.");
+      return;
+    }
 
-function cancelarEdicion() {
-  setIdEditando(null);
+    const datosProducto = {
+      nombre: formulario.nombre.trim(),
+      categoria: formulario.categoria.trim(),
+      marca: formulario.marca.trim(),
+      modelo: formulario.modelo.trim(),
+      precio: Number(formulario.precio),
+      stock: Number(formulario.stock),
+      imagen: formulario.imagen.trim() || "/favicon.svg",
+      descripcionCorta: formulario.descripcionCorta.trim(),
+      descripcionLarga: formulario.descripcionCorta.trim(),
+      destacado: formulario.destacado,
+      caracteristicas: []
+    };
 
-  setFormulario({
-    nombre: "",
-    categoria: "",
-    marca: "",
-    modelo: "",
-    precio: "",
-    stock: "",
-    imagen: "",
-    descripcion: ""
-  });
+    if (idEditando !== null) {
+      actualizarProducto(idEditando, datosProducto);
+      setMensaje("Producto actualizado correctamente.");
+    }
+    else {
+      agregarProducto(datosProducto);
+      setMensaje("Producto registrado correctamente.");
+    }
 
-  setErrores({});
-  setMensaje("");
-}
-
-function manejarEliminacion(producto) {
-  // Pedimos confirmación antes de borrar.
-  const confirmar = window.confirm(
-    `¿Estás seguro de eliminar "${producto.nombre}"?`
-  );
-
-  if (!confirmar) {
-    return;
+    setProductos(obtenerProductos());
+    limpiarFormulario();
   }
 
-  // Eliminamos el producto de localStorage.
-  eliminarProducto(producto.id);
+  function manejarEliminacion(producto) {
+    const confirmar = window.confirm(
+      `¿Estás seguro de eliminar "${producto.nombre}"?`
+    );
 
-  // Actualizamos la tabla sin recargar la página.
-  setProductos(obtenerProductos());
+    if (!confirmar) {
+      return;
+    }
 
-  // Si estábamos editando ese producto, cancelamos.
-  if (Number(idEditando) === Number(producto.id)) {
-    cancelarEdicion();
+    eliminarProducto(producto.id);
+    setProductos(obtenerProductos());
+
+    if (Number(idEditando) === Number(producto.id)) {
+      limpiarFormulario();
+    }
+
+    setMensaje(`Producto "${producto.nombre}" eliminado correctamente.`);
   }
 
-  setMensaje(`Producto "${producto.nombre}" eliminado correctamente.`);
-}
-
-
-
-  // Revisamos las existencias de cada producto.
   function obtenerEstado(producto) {
     if (Number(producto.stock) === 0) {
       return "Sin stock";
     }
 
-    if (
-      producto.stockCritico !== null &&
-      producto.stockCritico !== undefined &&
-      producto.stockCritico !== "" &&
-      Number(producto.stock) <= Number(producto.stockCritico)
-    ) {
-      return "Stock crítico";
+    if (Number(producto.stock) <= 5) {
+      return "Stock bajo";
     }
 
     return "Disponible";
   }
 
   return (
-    <main className="container py-5">
-      <h1>Panel de administración</h1>
-      <p>Administración de productos de PC-SHOP</p>
+    <main className="adminx">
+      <div className="container">
+        <div className="adminx-header">
+          <div>
+            <span className="adminx-kicker">PC-SHOP ADMIN</span>
+            <h1>Administración de productos</h1>
+            <p>Gestiona el catálogo que se muestra en la tienda pública.</p>
+          </div>
 
-      <Link to="/" className="btn btn-outline-light mb-4">
-        Volver a la tienda
-      </Link>
-        
-<section className="mb-5">
-<h2>
-  {idEditando !== null ? "Editar producto" : "Registrar producto"}
-</h2>  <p>Completa los datos del nuevo producto.</p>
+          <div className="adminx-header-links">
+            <Link to="/" className="adminx-link-secundario">Ver tienda</Link>
+            <Link to="/admin/usuarios" className="adminx-link-principal">Usuarios</Link>
+          </div>
+        </div>
 
-<form onSubmit={manejarRegistro} className="row g-3" noValidate>    {[
-      ["nombre", "Nombre"],
-      ["categoria", "Categoría"],
-      ["marca", "Marca"],
-      ["modelo", "Modelo"],
-      ["precio", "Precio"],
-      ["stock", "Stock"],
-      ["imagen", "Ruta de imagen"],
-      ["descripcion", "Descripción"]
-    ].map(([campo, etiqueta]) => (
-      <div className="col-md-6" key={campo}>
-        <label htmlFor={campo} className="form-label">
-          {etiqueta}
-        </label>
+        <section className="adminx-panel">
+          <div className="adminx-panel-titulo">
+            <div>
+              <h2>{idEditando !== null ? "Editar producto" : "Registrar producto"}</h2>
+              <p>Completa los datos del producto.</p>
+            </div>
+          </div>
 
-        <input
-          id={campo}
-          name={campo}
-          type={
-            campo === "precio" || campo === "stock"
-              ? "number"
-              : "text"
-          }
-          min={campo === "precio" ? "1" : campo === "stock" ? "0" : undefined}
-          step={campo === "precio" || campo === "stock" ? "1" : undefined}
-          className="form-control"
-          value={formulario[campo]}
-          onChange={manejarCambio}
-        />
-        {errores[campo] && (
-  <small className="text-danger d-block mt-1">
-    {errores[campo]}
-  </small>
-)}
-      </div>
-    ))}
-
-    
-<div className="col-12 d-flex gap-2">
-  <button type="submit" className="btn btn-info">
-    {idEditando !== null
-      ? "Guardar cambios"
-      : "Registrar producto"}
-  </button>
-
-  {idEditando !== null && (
-    <button
-      type="button"
-      className="btn btn-secondary"
-      onClick={cancelarEdicion}
-    >
-      Cancelar edición
-    </button>
-  )}
-</div>
-
-  </form>
-
-  {mensaje && (
-    <p className="mt-3" role="status">
-      {mensaje}
-    </p>
-  )}
-</section>
-
-      <h2>Productos</h2>
-      <p>Productos registrados: {productos.length}</p>
-
-      <div className="table-responsive">
-        <table className="table table-dark table-striped">
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Nombre</th>
-              <th>Categoría</th>
-              <th>Precio</th>
-              <th>Stock</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {productos.map((producto) => (
-              <tr key={producto.id}>
-                <td>{producto.codigo || producto.id}</td>
-                <td>{producto.nombre}</td>
-                <td>{producto.categoria}</td>
-                <td>
-                  ${Number(producto.precio).toLocaleString("es-CL")}
-                </td>
-                <td>{producto.stock}</td>
-                
-                <td>{obtenerEstado(producto)}</td>
-                
-<td>
-  <div className="d-flex gap-2">
-    <button
-      type="button"
-      className="btn btn-warning btn-sm"
-      onClick={() => manejarEdicion(producto)}
-    >
-      Editar
-    </button>
-
-    <button
-      type="button"
-      className="btn btn-danger btn-sm"
-      onClick={() => manejarEliminacion(producto)}
-    >
-      Eliminar
-    </button>
-  </div>
-</td>
-
-
-                
-              </tr>
+          <form onSubmit={manejarRegistro} className="row g-3" noValidate>
+            {[
+              ["nombre", "Nombre", "text"],
+              ["categoria", "Categoría", "text"],
+              ["marca", "Marca", "text"],
+              ["modelo", "Modelo", "text"],
+              ["precio", "Precio", "number"],
+              ["stock", "Stock", "number"],
+              ["imagen", "URL o ruta de imagen", "text"]
+            ].map(([campo, etiqueta, tipo]) => (
+              <div className="col-12 col-md-6" key={campo}>
+                <label className="adminx-label" htmlFor={campo}>{etiqueta}</label>
+                <input
+                  id={campo}
+                  name={campo}
+                  type={tipo}
+                  min={campo === "precio" ? "1" : campo === "stock" ? "0" : undefined}
+                  className="adminx-input"
+                  value={formulario[campo]}
+                  onChange={manejarCambio}
+                />
+                {errores[campo] && <small className="adminx-error">{errores[campo]}</small>}
+              </div>
             ))}
-          </tbody>
-        </table>
+
+            <div className="col-12">
+              <label className="adminx-label" htmlFor="descripcionCorta">Descripción corta</label>
+              <textarea
+                id="descripcionCorta"
+                name="descripcionCorta"
+                rows="3"
+                className="adminx-input adminx-textarea"
+                value={formulario.descripcionCorta}
+                onChange={manejarCambio}
+              />
+              {errores.descripcionCorta && <small className="adminx-error">{errores.descripcionCorta}</small>}
+            </div>
+
+            <div className="col-12">
+              <label className="adminx-check">
+                <input
+                  type="checkbox"
+                  name="destacado"
+                  checked={formulario.destacado}
+                  onChange={manejarCambio}
+                />
+                Mostrar como producto destacado
+              </label>
+            </div>
+
+            <div className="col-12 adminx-actions">
+              <button type="submit" className="adminx-btn-primary">
+                {idEditando !== null ? "Guardar cambios" : "Registrar producto"}
+              </button>
+
+              {idEditando !== null && (
+                <button type="button" className="adminx-btn-secondary" onClick={limpiarFormulario}>
+                  Cancelar edición
+                </button>
+              )}
+            </div>
+          </form>
+
+          {mensaje && <p className="adminx-mensaje" role="status">{mensaje}</p>}
+        </section>
+
+        <section className="adminx-panel">
+          <div className="adminx-panel-titulo adminx-panel-titulo-fila">
+            <div>
+              <h2>Productos registrados</h2>
+              <p>{productos.length} productos en el catálogo.</p>
+            </div>
+          </div>
+
+          <div className="table-responsive adminx-tabla-wrap">
+            <table className="table adminx-tabla align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Producto</th>
+                  <th>Categoría</th>
+                  <th>Precio</th>
+                  <th>Stock</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {productos.map((producto) => (
+                  <tr key={producto.id}>
+                    <td>{producto.id}</td>
+                    <td>{producto.nombre}</td>
+                    <td>{producto.categoria}</td>
+                    <td>${Number(producto.precio).toLocaleString("es-CL")}</td>
+                    <td>{producto.stock}</td>
+                    <td>
+                      <span className={`adminx-estado ${Number(producto.stock) === 0 ? "agotado" : Number(producto.stock) <= 5 ? "bajo" : "disponible"}`}>
+                        {obtenerEstado(producto)}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="adminx-table-actions">
+                        <button type="button" className="adminx-btn-editar" onClick={() => manejarEdicion(producto)}>Editar</button>
+                        <button type="button" className="adminx-btn-eliminar" onClick={() => manejarEliminacion(producto)}>Eliminar</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
     </main>
   );

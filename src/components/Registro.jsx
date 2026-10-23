@@ -63,13 +63,13 @@ function Registro() {
       return;
     }
 
-    if (!validarRut(formulario.rut)) {
-    setError("El RUT ingresado no es válido.");
-    return;
-    }
-
     if (!validarNombre(formulario.nombre)) {
       setError("El nombre ingresado no es válido.");
+      return;
+    }
+
+    if (!validarRut(formulario.rut)) {
+      setError("El RUT ingresado no es válido.");
       return;
     }
 
@@ -99,28 +99,30 @@ function Registro() {
     }
 
     if (!validarPassword(formulario.contrasena)) {
-  setError(
-    "La contraseña debe tener al menos 6 caracteres, una letra mayúscula, un número y un carácter especial."
-  );
-  return;
-}
+      setError("La contraseña debe tener al menos 6 caracteres, una letra y un número.");
+      return;
+    }
 
     if (formulario.contrasena !== formulario.confirmarContrasena) {
       setError("Las contraseñas no coinciden.");
       return;
     }
 
-    // Comprobamos que el correo no esté registrado
-if (buscarUsuarioPorCorreo(formulario.correo)) {
-  setError("Ya existe una cuenta con ese correo.");
-  return;
-}
+    const correoExistente =
+      buscarUsuarioPorCorreo(formulario.correo);
 
-// Comprobamos que el RUT no esté registrado
-if (buscarUsuarioPorRut(formulario.rut)) {
-  setError("Ya existe una cuenta con ese RUT.");
-  return;
-}
+    if (correoExistente) {
+      setError("Ya existe una cuenta con ese correo.");
+      return;
+    }
+
+    const rutExistente =
+      buscarUsuarioPorRut(formulario.rut);
+
+    if (rutExistente) {
+      setError("Ya existe una cuenta con ese RUT.");
+      return;
+    }
 
     const nuevoUsuario = {
       id: Date.now(),
@@ -131,7 +133,7 @@ if (buscarUsuarioPorRut(formulario.rut)) {
       region: formulario.region,
       ciudad: formulario.ciudad,
       direccion: formulario.direccion,
-       password: formulario.contrasena
+      password: formulario.contrasena
     };
 
     agregarUsuario(nuevoUsuario);
@@ -213,7 +215,8 @@ if (buscarUsuarioPorRut(formulario.rut)) {
               Completa tus datos para registrarte.
             </p>
 
-            <form onSubmit={manejarEnvio} noValidate>
+            <form onSubmit={manejarEnvio}>
+
               <div className="registro-grid">
 
                 <div className="campo-registro">
